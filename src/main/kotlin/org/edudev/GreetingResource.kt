@@ -1,5 +1,7 @@
 package org.edudev
 
+import org.edudev.domain.states.Region
+import org.edudev.domain.states.State
 import org.litote.kmongo.KMongo
 import org.litote.kmongo.getCollection
 import javax.ws.rs.*
@@ -14,11 +16,16 @@ class GreetingResource {
 
     val client = KMongo.createClient()
     val database = client.getDatabase("test")
-    val col = database.getCollection<Jedi>()
+    val col = database.getCollection<State>()
 
     @POST
-    fun create() {
-        col.insertOne(Jedi("Eduardo José"))
+    fun create(): String {
+        col.insertOne(State( name = "Pernambuco", habitats = 25000, region = Region.NORTH))
+        return "Posted!"
     }
 
+    @GET
+    fun eae(): String {
+        return "HI!"
+    }
 }
