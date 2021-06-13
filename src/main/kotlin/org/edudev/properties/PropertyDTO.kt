@@ -1,8 +1,8 @@
 package org.edudev.properties
 
+import org.edudev.arch.domain.NoArg
 import org.edudev.properties.directionalities.Directionality
 import java.util.*
-import org.edudev.arch.domain.NoArg
 
 
 @NoArg
