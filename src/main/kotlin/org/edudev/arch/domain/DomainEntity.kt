@@ -1,5 +1,7 @@
 package org.edudev.arch.domain
 
-interface DomainEntity {
-    val id: String
+import java.io.Serializable
+
+interface DomainEntity : Serializable{
+    val _id: String
 }

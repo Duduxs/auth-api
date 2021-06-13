@@ -10,6 +10,6 @@ interface ReadOnlyRepository<T : DomainEntity> {
 
     fun list(query: String?, sort: Sort?, page: Page?): Collection<T>
 
-    fun size(query: String) : Long
+    fun size() : Long
 
 }

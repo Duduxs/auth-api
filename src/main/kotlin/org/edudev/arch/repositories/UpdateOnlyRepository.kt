@@ -4,6 +4,6 @@ import org.edudev.arch.domain.DomainEntity
 
 interface UpdateOnlyRepository<T : DomainEntity> {
 
-    fun update(entity: T) : T
+    fun update(entity: T)
 
 }

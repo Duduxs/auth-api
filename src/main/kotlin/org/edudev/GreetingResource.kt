@@ -1,10 +1,7 @@
 package org.edudev
 
-import org.edudev.domain.states.City
-import org.edudev.domain.states.Region
-import org.edudev.domain.states.State
-import org.litote.kmongo.KMongo
-import org.litote.kmongo.getCollection
+import org.edudev.properties.Properties
+import javax.inject.Inject
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 
@@ -13,15 +10,14 @@ import javax.ws.rs.core.MediaType
 @Consumes(MediaType.APPLICATION_JSON)
 class GreetingResource {
 
+    @Inject
+    lateinit var properties: Properties
 
-
-
-
-    @POST
-    fun create(): String {
+    @GET
+    fun create(): Long {
 
 //        col.insertOne(State( name = "Pernambuco", habitats = 25000, region = Region.NORTH))
-        return "Posted!"
+        return properties.size()
     }
 
 

@@ -1,3 +1,5 @@
 package org.edudev.properties
 
-interface Properties
+import org.edudev.arch.repositories.Repository
+
+interface Properties : Repository<Property>

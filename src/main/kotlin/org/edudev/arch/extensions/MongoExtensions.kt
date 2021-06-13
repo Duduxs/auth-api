@@ -19,5 +19,5 @@ fun <T> FindIterable<T>.sort(order: Sort?): FindIterable<T> = if (order == null)
 }
 
 fun <T> FindIterable<T>.page(page: Page?): FindIterable<T> =
-    if (page == null) this else this.skip(page.first.toInt()).limit(page.size.toInt())
+    if (page == null) this else this.skip(page.first.toInt()).limit(page.last.toInt())
 
