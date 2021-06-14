@@ -1,13 +1,20 @@
 package org.edudev.arch.domain
 
 import java.io.Serializable
+import javax.ws.rs.DefaultValue
+import javax.ws.rs.QueryParam
 
+@NoArg
 data class Sort(
-    val field: String,
+    @QueryParam("field")
+    @DefaultValue("")
+    val field: String = "",
+    @QueryParam("order")
+    @DefaultValue("ASCENDING")
     val order: SortOrder = SortOrder.ASCENDING
 ) : Serializable
 
 enum class SortOrder(val type: String) {
-    ASCENDING("ASC"),
-    DESCENDING("DESC")
+    ASCENDING("ASCENDING"),
+    DESCENDING("DESCENDING")
 }

@@ -36,7 +36,7 @@ open class GenericRepositoryMongoImpl<T : DomainEntity>(
         .findOneById(id)
         ?.takeIf { entityClass.isInstance(it) }
 
-    override fun list(query: String?, sort: Sort?, page: Page?): Collection<T> = textSearch(query)
+    override fun list(query: String?, sort: List<Sort>, page: Page?): Collection<T> = textSearch(query)
         .sort(sort)
         .page(page)
         .loadAsList()

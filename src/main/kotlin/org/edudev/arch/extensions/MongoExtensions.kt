@@ -8,13 +8,14 @@ import org.edudev.arch.domain.Sort
 import org.edudev.arch.domain.SortOrder
 
 
-fun <T> FindIterable<T>.sort(order: Sort?): FindIterable<T> = if (order == null) this else {
+fun <T> FindIterable<T>.sort(order: List<Sort>): FindIterable<T> = if (order.isEmpty()) this else {
     val result = BsonDocument()
-        .append(
-            order.field,
-            BsonInt32(if (order.order == SortOrder.DESCENDING) -1 else 1)
+    for ((field, type) in order) {
+        result.append(
+            field,
+            BsonInt32(if (type == SortOrder.DESCENDING) -1 else 1)
         )
-
+    }
     this.sort(result)
 }
 
