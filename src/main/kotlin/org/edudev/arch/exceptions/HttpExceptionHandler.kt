@@ -31,6 +31,5 @@ open class HttpExceptionHandler(status: HttpResponseStatus, payload: String) : E
 }
 
 class NotFoundHttpException(payload: String = "Não encontrado!") : HttpExceptionHandler(NOT_FOUND, payload)
-
 class NotAcceptableHttpException(payload: String = "Não Aceito!") : HttpExceptionHandler(NOT_ACCEPTABLE, payload)
 

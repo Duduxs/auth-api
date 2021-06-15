@@ -4,17 +4,13 @@ import java.io.Serializable
 import javax.ws.rs.DefaultValue
 import javax.ws.rs.QueryParam
 
-@NoArg
-data class Sort(
-    @QueryParam("field")
-    @DefaultValue("")
-    val field: String = "",
-    @QueryParam("order")
-    @DefaultValue("ASCENDING")
-    val order: SortOrder = SortOrder.ASCENDING
+
+class Sort(
+    val field: String,
+    val type: SortOrder = SortOrder.ASCENDING
 ) : Serializable
 
-enum class SortOrder(val type: String) {
-    ASCENDING("ASCENDING"),
-    DESCENDING("DESCENDING")
+enum class SortOrder(val type: String, val abbr: String) {
+    ASCENDING("ASCENDING", "ASC"),
+    DESCENDING("DESCENDING", "DESC")
 }

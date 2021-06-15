@@ -1,7 +1,7 @@
 package org.edudev.arch.domain
 
-@NoArg
-data class Page(
-    val first: Long,
-    val last: Long
+
+class Page(
+    val first: Long = 0,
+    val last: Long = 10
 )
