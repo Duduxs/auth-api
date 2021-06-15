@@ -12,7 +12,7 @@ fun <T> FindIterable<T>.sort(order: Sort?): FindIterable<T> = if (order == null)
 
     val result = BsonDocument().append(
         order.field,
-        BsonInt32(if (order.type == SortOrder.DESCENDING || order.type.abbr == SortOrder.DESCENDING.abbr) -1 else 1)
+        BsonInt32(if (order.type == SortOrder.DESCENDING) -1 else 1)
     )
 
     this.sort(result)

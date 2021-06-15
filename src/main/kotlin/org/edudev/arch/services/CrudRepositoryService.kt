@@ -1,6 +1,5 @@
 package org.edudev.arch.services
 
-import mu.KLogging
 import org.edudev.arch.domain.*
 import org.edudev.arch.dtos.EntityDTOMapper
 import org.edudev.arch.exceptions.NotAcceptableHttpException
@@ -21,26 +20,25 @@ open class CrudRepositoryService<T : DomainEntity, DTO : Any, DTO_S>(
 
     @GET
     @Path("{_id}")
-    fun findById(@PathParam("_id") id: String, @QueryParam("summary") summary: Boolean?) : Any? {
+    fun findById(@PathParam("_id") id: String, @QueryParam("summary") @DefaultValue("true") summary: Boolean) : Any? {
         val entity = baseEntityFromPath(id)
-        return entity.mappedWith(mapper, summary ?: true)
+        return entity.mappedWith(mapper, summary)
     }
 
     @GET
     fun list(
-        @QueryParam("query") query: String?,
-        @QueryParam("field") @DefaultValue("_id") fieldOrder: String,
-        @QueryParam("order") @DefaultValue ("ASC") sortOrder: SortOrder,
         @QueryParam("first") firstPage: Long,
         @QueryParam("last") lastPage: Long,
-        @QueryParam("summary") summary: Boolean?
+        @QueryParam("query") @DefaultValue("") query: String,
+        @QueryParam("field") @DefaultValue("_id") sortableField: String,
+        @QueryParam("order") @DefaultValue("DESCENDING") sortOrder: SortOrder,
+        @QueryParam("summary") @DefaultValue("true") summary: Boolean
     ) : Collection<Any?> {
-        logger.warn { "\n\n\n\n" + sortOrder.abbr }
         return repository.list(
             query = query,
-            sort = Sort(fieldOrder, sortOrder),
+            sort = Sort(sortableField, sortOrder),
             page = Page(firstPage, lastPage)
-        ).mappedWith(mapper = mapper, summary = summary ?: true)
+        ).mappedWith(mapper = mapper, summary = summary)
     }
 
     @POST
@@ -72,8 +70,6 @@ open class CrudRepositoryService<T : DomainEntity, DTO : Any, DTO_S>(
     }
 
     private fun baseEntityFromPath(id: String) = repository.findById(id) ?: throw NotFoundHttpException("Entidade com id $id não encontrada!")
-
-    companion object : KLogging()
 }
 
 

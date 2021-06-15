@@ -10,7 +10,7 @@ interface ReadOnlyRepository<T : DomainEntity> {
 
     fun exists(id: String) = findById(id) != null
 
-    fun list(query: String?, sort: Sort?, page: Page?): Collection<T>
+    fun list(query: String, sort: Sort, page: Page): Collection<T>
 
     fun size() : Long
 

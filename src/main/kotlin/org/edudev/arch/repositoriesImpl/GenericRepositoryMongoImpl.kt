@@ -4,6 +4,11 @@ import com.mongodb.client.FindIterable
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.Filters.text
+import org.bson.BsonDocument
+import org.bson.BsonRegularExpression
+import org.bson.BsonString
+import org.bson.BsonValue
+import org.bson.conversions.Bson
 import org.edudev.arch.domain.DomainEntity
 import org.edudev.arch.domain.Entity
 import org.edudev.arch.domain.Page
@@ -40,7 +45,7 @@ open class GenericRepositoryMongoImpl<T : DomainEntity>(
         .findOneById(id)
         ?.takeIf { entityClass.isInstance(it) }
 
-    override fun list(query: String?, sort: Sort?, page: Page?): Collection<T> {
+    override fun list(query: String, sort: Sort, page: Page): Collection<T> {
         return textSearch(query)
             .sort(sort)
             .page(page)
@@ -66,7 +71,9 @@ open class GenericRepositoryMongoImpl<T : DomainEntity>(
     }
 
     private fun textSearch(value: String?): FindIterable<T> =
-        if (value.isNullOrEmpty()) collection.find() else this.collection.find(and(text(value)))
+        if (value.isNullOrEmpty()) collection.find() else this.collection.find(
+            BsonDocument("name", BsonRegularExpression(value))
+        )
 
     private fun <L : Any> FindIterable<L>.loadAsList(): ArrayList<L> = this.toCollection(ArrayList())
 
