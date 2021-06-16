@@ -21,7 +21,15 @@ class PropertyDTOTest {
     private val propertyDTO = createPropertyDTO(property)
 
     @Test
-    fun `must be exactly`() {
+    fun `Property must be instantiable`() {
+        property.assertEquals(propertyDTO)
+    }
 
+    @Test
+    fun `Must update property in the update method`(){
+        val newProperty = Property(propertyDTO._id)
+
+        propertyDTO.update(newProperty)
+        newProperty.assertEquals(propertyDTO)
     }
 }
