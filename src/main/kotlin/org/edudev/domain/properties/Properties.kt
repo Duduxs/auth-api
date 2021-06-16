@@ -1,4 +1,4 @@
-package org.edudev.properties
+package org.edudev.domain.properties
 
 import org.edudev.arch.repositories.Repository
 

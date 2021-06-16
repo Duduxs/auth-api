@@ -1,8 +1,8 @@
-package org.edudev.properties
+package org.edudev.domain.properties
 
 import org.edudev.arch.domain.DomainEntity
 import org.edudev.arch.domain.Entity
-import org.edudev.properties.directionalities.Directionality
+import org.edudev.domain.properties.directionalities.Directionality
 import org.jetbrains.annotations.NotNull
 import java.util.*
 

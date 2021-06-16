@@ -1,4 +1,4 @@
-package org.edudev.properties.directionalities
+package org.edudev.domain.properties.directionalities
 
 enum class Directionality(val field: String) {
     RENT("rent"),

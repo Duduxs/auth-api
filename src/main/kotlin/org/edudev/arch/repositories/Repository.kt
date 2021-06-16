@@ -21,7 +21,7 @@ interface Repository<T : DomainEntity> : ReadOnlyRepository<T>, InsertOnlyReposi
 
                 override fun findById(id: String) = throw UnsupportedOperationException("Method not implemented!")
 
-                override fun list(query: String?, sort: Sort?, page: Page?) = throw UnsupportedOperationException("Method not implemented!")
+                override fun list(query: String, sort: Sort, page: Page) = throw UnsupportedOperationException("Method not implemented!")
 
                 override fun size() = throw UnsupportedOperationException("Method not implemented!")
 
