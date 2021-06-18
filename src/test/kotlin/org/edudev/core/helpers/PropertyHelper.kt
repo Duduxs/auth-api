@@ -20,9 +20,7 @@ fun createProperty(
     it.value = value
 }
 
-fun createPropertyDTO(
-    property: Property
-) = PropertyDTO(
+fun createPropertyDTO(property: Property) = PropertyDTO(
     createProperty(
         _id = property._id,
         name = property.name,
@@ -32,10 +30,7 @@ fun createPropertyDTO(
     )
 )
 
-
-fun createPropertySummaryDTO(
-    property: Property
-) = PropertySummaryDTO(
+fun createPropertySummaryDTO(property: Property) = PropertySummaryDTO(
     createProperty(
         _id = property._id,
         name = property.name,
@@ -47,7 +42,9 @@ fun Property.assertEquals(dto: PropertyDTO): Any = assertThat(dto)
         .usingRecursiveComparison()
         .isEqualTo(this)
 
-fun Collection<Property>.assertEquals(properties: Collection<PropertyDTO>) : Any = assertThat(properties).usingRecursiveComparison().isEqualTo(this)
+fun Collection<Property>.assertEquals(properties: Collection<PropertyDTO>) : Any = assertThat(properties)
+    .usingRecursiveComparison()
+    .isEqualTo(this)
 
 
 

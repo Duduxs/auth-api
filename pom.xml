@@ -88,6 +88,12 @@
       <artifactId>kotlin-extensions</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.mockk</groupId>
+      <artifactId>mockk</artifactId>
+      <version>1.10.0</version>
+      <scope>test</scope>
+    </dependency>
     <!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
     <dependency>
       <groupId>org.assertj</groupId>
