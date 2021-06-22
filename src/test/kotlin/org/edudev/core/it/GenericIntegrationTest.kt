@@ -1,7 +1,5 @@
 package org.edudev.core.it
 
-import io.quarkus.test.common.QuarkusTestResource
-import io.restassured.http.ContentType
 import io.restassured.http.ContentType.JSON
 import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
@@ -10,7 +8,6 @@ import org.edudev.arch.domain.DomainEntity
 import org.edudev.arch.exceptions.NotFoundHttpException
 import org.edudev.arch.repositories.Repository
 import org.edudev.core.helpers.GenericHelper
-import org.edudev.core.persistence.MongoResource
 import org.edudev.domain.properties.Property
 import org.edudev.domain.properties.PropertyDTO
 import org.hamcrest.CoreMatchers.`is`
@@ -46,7 +43,6 @@ open class GenericIntegrationTest<E : DomainEntity, DTO : Any, DTO_S>(
     fun `must fail on insert breeder`() {
         Given {
             contentType(JSON)
-
         } When {
             body(PropertyDTO(Property()))
             post()

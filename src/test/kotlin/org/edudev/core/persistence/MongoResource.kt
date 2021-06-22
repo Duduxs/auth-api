@@ -12,7 +12,7 @@ class MongoResource : QuarkusTestResourceLifecycleManager {
     override fun start(): MutableMap<String, String>{
         container.start()
         logger.info { "Inicializando mongo de testes em ${container.replicaSetUrl}" }
-        return mutableMapOf("MONGODB_DB_URL" to container.replicaSetUrl)
+        return mutableMapOf("MONGODB_URL" to container.replicaSetUrl)
     }
 
     override fun stop() { container.stop() }
