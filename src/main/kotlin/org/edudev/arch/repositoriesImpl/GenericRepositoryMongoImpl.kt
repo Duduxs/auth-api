@@ -5,6 +5,7 @@ import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters.eq
 import org.bson.BsonDocument
 import org.bson.BsonRegularExpression
+import org.edudev.arch.db.MongoConfig
 import org.edudev.arch.domain.*
 import org.edudev.arch.extensions.findAnnotationRecursively
 import org.edudev.arch.extensions.page
@@ -19,15 +20,15 @@ open class GenericRepositoryMongoImpl<T : DomainEntity>(
     mongoConfig: MongoConfig
 ) : Repository<T> {
 
-    private val database = KMongo.createClient(mongoConfig.url).getDatabase(mongoConfig.url.database!!)
-
     private val collectionName = entityClass.findAnnotationRecursively(Entity::class.java)
         ?.value
         ?.takeIf { it.isNotEmpty() }
         ?: entityClass.simpleName
         ?: throw IllegalArgumentException("Can't get collection name 4 $entityClass /;")
 
-    private val collection: MongoCollection<T> = database.getCollection(collectionName, entityClass)
+    private val collection: MongoCollection<T> = KMongo.createClient(mongoConfig.url)
+        .getDatabase(mongoConfig.url.database!!)
+        .getCollection(collectionName, entityClass)
 
     override fun findById(id: String) = collection
         .findOneById(id)

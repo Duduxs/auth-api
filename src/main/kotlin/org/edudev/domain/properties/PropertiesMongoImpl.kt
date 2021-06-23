@@ -1,9 +1,7 @@
 package org.edudev.domain.properties
 
-import com.mongodb.client.MongoDatabase
-import org.edudev.arch.domain.MongoConfig
+import org.edudev.arch.db.MongoConfig
 import org.edudev.arch.repositoriesImpl.GenericRepositoryMongoImpl
-import javax.enterprise.context.ApplicationScoped
 import javax.enterprise.context.Dependent
 import javax.inject.Inject
 
