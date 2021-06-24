@@ -1,8 +1,7 @@
 package org.edudev.arch.exceptions
 
 import io.netty.handler.codec.http.HttpResponseStatus
-import io.netty.handler.codec.http.HttpResponseStatus.NOT_ACCEPTABLE
-import io.netty.handler.codec.http.HttpResponseStatus.NOT_FOUND
+import io.netty.handler.codec.http.HttpResponseStatus.*
 import mu.KLogging
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
@@ -31,5 +30,6 @@ open class HttpExceptionHandler(status: HttpResponseStatus, payload: String) : E
 }
 
 class NotFoundHttpException(payload: String = "Não encontrado!") : HttpExceptionHandler(NOT_FOUND, payload)
+class ConflictHttpException(payload: String = "Conflito!") : HttpExceptionHandler(CONFLICT, payload)
 class NotAcceptableHttpException(payload: String = "Não Aceito!") : HttpExceptionHandler(NOT_ACCEPTABLE, payload)
 

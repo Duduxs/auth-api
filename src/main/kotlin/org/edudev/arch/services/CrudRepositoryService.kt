@@ -1,7 +1,9 @@
 package org.edudev.arch.services
 
+import mu.KLogging
 import org.edudev.arch.domain.*
 import org.edudev.arch.dtos.EntityDTOMapper
+import org.edudev.arch.exceptions.ConflictHttpException
 import org.edudev.arch.exceptions.NotAcceptableHttpException
 import org.edudev.arch.exceptions.NotFoundHttpException
 import org.edudev.arch.extensions.mappedWith
@@ -20,7 +22,7 @@ open class CrudRepositoryService<T : DomainEntity, DTO : Any, DTO_S>(
 
     @GET
     @Path("{_id}")
-    fun findById(@PathParam("_id") id: String, @QueryParam("summary") @DefaultValue("true") summary: Boolean) : Any? {
+    fun findById(@PathParam("_id") id: String, @QueryParam("summary") @DefaultValue("true") summary: Boolean): Any? {
         val entity = baseEntityFromPath(id)
         return entity.mappedWith(mapper, summary)
     }
@@ -33,7 +35,7 @@ open class CrudRepositoryService<T : DomainEntity, DTO : Any, DTO_S>(
         @QueryParam("field") @DefaultValue("_id") sortableField: String,
         @QueryParam("order") @DefaultValue("DESCENDING") sortOrder: SortOrder,
         @QueryParam("summary") @DefaultValue("true") summary: Boolean
-    ) : Collection<Any?> {
+    ): Collection<Any?> {
         return repository.list(
             query = query,
             sort = Sort(sortableField, sortOrder),
@@ -44,13 +46,17 @@ open class CrudRepositoryService<T : DomainEntity, DTO : Any, DTO_S>(
     @POST
     fun save(dto: DTO): DTO {
         val entity = mapper.unmap(dto)
+
+        if (repository.exists(entity._id)) throw ConflictHttpException("Entidade com id ${entity._id} já cadastrada!")
+
         repository.insert(entity)
+
         return mapper.mapFull(entity)
     }
 
     @PUT
     @Path("{_id}")
-    fun update(@PathParam("_id") id: String, dto: DTO) : DTO {
+    fun update(@PathParam("_id") id: String, dto: DTO): DTO {
         val entity = mapper.unmap(dto)
 
         when {
@@ -69,7 +75,8 @@ open class CrudRepositoryService<T : DomainEntity, DTO : Any, DTO_S>(
         repository.remove(entity)
     }
 
-    private fun baseEntityFromPath(id: String) = repository.findById(id) ?: throw NotFoundHttpException("Entidade com id $id não encontrada!")
+    private fun baseEntityFromPath(id: String) =
+        repository.findById(id) ?: throw NotFoundHttpException("Entidade com id $id não encontrada!")
 }
 
 

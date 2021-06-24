@@ -1,11 +1,15 @@
-package org.edudev.core.helpers
+package org.edudev.domain.properties
 
-import org.edudev.domain.properties.Property
-import org.edudev.domain.properties.PropertyDTO
-import org.edudev.domain.properties.PropertySummaryDTO
 import org.edudev.domain.properties.directionalities.Directionality
 import java.util.*
 
+val propertyWithPopulatedValues: Property = createProperty(
+    _id = UUID.randomUUID().toString(),
+    name = "Propriedade de dominio",
+    address = "Endereço de dominio",
+    directionality = Directionality.SELL,
+    value = 9.0
+)
 
 fun createProperty(
     _id: String = UUID.randomUUID().toString(),
@@ -37,5 +41,7 @@ fun createPropertySummaryDTO(domain: Property) = PropertySummaryDTO(
         value = domain.value
     )
 )
+
+
 
 

@@ -2,8 +2,6 @@ package org.edudev.domain.properties
 
 
 import org.edudev.core.helpers.assertEquals
-import org.edudev.core.helpers.createProperty
-import org.edudev.core.helpers.createPropertyDTO
 import org.edudev.domain.properties.directionalities.Directionality
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
