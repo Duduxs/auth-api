@@ -8,17 +8,14 @@ import mu.KLogging
 import org.edudev.arch.domain.DomainEntity
 import org.edudev.arch.exceptions.NotFoundHttpException
 import org.edudev.arch.repositories.Repository
+import org.edudev.core.helpers.assertCollectionEquals
 import org.edudev.core.helpers.assertEquals
 import org.edudev.core.helpers.assertSummaryEquals
 import org.edudev.core.helpers.setNewId
-import org.edudev.domain.properties.PropertyDTO
-import org.edudev.domain.properties.PropertySummaryDTO
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assume
-import org.junit.Ignore
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
-import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.Stream
 import javax.inject.Inject
@@ -44,7 +41,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
 
     private fun mockEntitiesForListingTests() {
         Stream.generate { entity::class.createInstance() }
-            .limit(5)
+            .limit(4)
             .collect(Collectors.toList())
             .forEachIndexed { index, entity ->
                 entity.setNewId(index.toString())
@@ -145,7 +142,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
     @Test
     @Order(6)
     fun `Must insert entity`() {
-        dto.setNewId(UUID.randomUUID().toString())
+        dto.setNewId("1000")
 
         Given {
             contentType(JSON)
@@ -156,6 +153,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
             statusCode(200)
         }
     }
+
 
     @Test
     @Order(7)
@@ -170,13 +168,18 @@ open class GenericIntegrationTest<E : DomainEntity>(
         }
     }
 
-    @Test
+    @RepeatedTest(2)
     @Order(8)
-    fun `Must delete entity`() {
+    fun `Must delete entities`(repetitionInfo: RepetitionInfo) {
+        val id = when (repetitionInfo.currentRepetition) {
+            1 -> entity._id
+            else -> "1000"
+        }
+
         Given {
             contentType(JSON)
         } When {
-            delete(entity._id)
+            delete(id)
         } Then {
             statusCode(204)
         }
@@ -209,6 +212,63 @@ open class GenericIntegrationTest<E : DomainEntity>(
         }
     }
 
+    @RepeatedTest(3)
+    @Order(11)
+    fun `Must not list entities by wrong query params`(repetitionInfo: RepetitionInfo) {
+        val expression = when (repetitionInfo.currentRepetition) {
+            1 -> "?first=-1&last=5"
+            2 -> "?first=1&last=-3"
+            else -> "?first=3&last=2"
+        }
+
+        Given {
+            contentType(JSON)
+        } When {
+            get(expression)
+        } Then {
+            statusCode(400)
+        }
+    }
+
+    @Test
+    @Order(11)
+    fun `Must support all query params in list`() {
+        Given {
+            contentType(JSON)
+        } When {
+            get("?first=0&last=9&q=entity&field=_id&order=ASC&summary=false")
+        } Then {
+            statusCode(200)
+        }
+    }
+
+    @Test
+    @Order(11)
+    fun `Must support without any query params in list`() {
+        Given {
+            contentType(JSON)
+        } When {
+            get()
+        } Then {
+            statusCode(200)
+        }
+    }
+
+    @Test
+    @Order(11)
+    fun `Must list entities from db`() {
+        Given {
+            contentType(JSON)
+        } When {
+            get("?order=ASC&summary=false")
+        } Then {
+            statusCode(200)
+            val values = extract().jsonPath().getList(".", dto.javaClass)
+
+            entities.assertCollectionEquals(values)
+        }
+    }
+
     @Test
     @Order(11)
     fun `Must list summarized entities from db`() {
@@ -217,13 +277,45 @@ open class GenericIntegrationTest<E : DomainEntity>(
         Given {
             contentType(JSON)
         } When {
-            get("?first=1&last=5")
+            get("?order=ASC")
         } Then {
             statusCode(200)
             val values = extract().jsonPath().getList(".", dto_s!!.javaClass)
-            values.forEachIndexed { index, dto_s -> entities.elementAt(index).assertSummaryEquals(dto_s)  }
+
+            values.forEachIndexed { index, dto_s -> entities.elementAt(index).assertSummaryEquals(dto_s) }
         }
     }
+
+    @Test
+    @Order(11)
+    fun `Must return only two entities in list sorting id by ASC order`() {
+        Given {
+            contentType(JSON)
+        } When {
+            get("?last=2&field=_id&order=ASC&summary=false")
+        } Then {
+            statusCode(200)
+            val values = extract().jsonPath().getList(".", dto.javaClass)
+
+            entities.filter { it._id.toInt() < 2 }.assertCollectionEquals(values)
+        }
+    }
+
+    @Test
+    @Order(11)
+    fun `Must return only three entities skipping the first in list sorting id by DESC order`() {
+        Given {
+            contentType(JSON)
+        } When {
+            get("?first=1&last=3&field=_id&order=DESC&summary=false")
+        } Then {
+            statusCode(200)
+            val values = extract().jsonPath().getList(".", dto.javaClass)
+            
+            entities.take(3).sortedByDescending { it._id }.assertCollectionEquals(values)
+        }
+    }
+
 
     companion object : KLogging()
 

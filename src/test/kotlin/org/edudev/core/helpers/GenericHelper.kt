@@ -2,6 +2,7 @@ package org.edudev.core.helpers
 
 import org.assertj.core.api.Assertions.assertThat
 import org.edudev.arch.domain.DomainEntity
+import org.litote.kmongo.fields
 import java.lang.reflect.Field
 
 

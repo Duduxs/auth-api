@@ -29,9 +29,9 @@ open class CrudRepositoryService<T : DomainEntity, DTO : Any, DTO_S>(
 
     @GET
     fun list(
-        @QueryParam("first") firstPage: Long,
-        @QueryParam("last") lastPage: Long,
-        @QueryParam("query") @DefaultValue("") query: String,
+        @QueryParam("first") @DefaultValue("0") firstPage: Long,
+        @QueryParam("last") @DefaultValue("10") lastPage: Long,
+        @QueryParam("q") @DefaultValue("") query: String,
         @QueryParam("field") @DefaultValue("_id") sortableField: String,
         @QueryParam("order") @DefaultValue("DESC") sortOrder: SortOrder,
         @QueryParam("summary") @DefaultValue("true") summary: Boolean
