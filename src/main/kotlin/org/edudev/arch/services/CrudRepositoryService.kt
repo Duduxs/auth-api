@@ -1,8 +1,8 @@
 package org.edudev.arch.services
 
-import mu.KLogging
 import org.edudev.arch.domain.*
 import org.edudev.arch.dtos.EntityDTOMapper
+import org.edudev.arch.exceptions.BadRequestHttpException
 import org.edudev.arch.exceptions.ConflictHttpException
 import org.edudev.arch.exceptions.NotAcceptableHttpException
 import org.edudev.arch.exceptions.NotFoundHttpException
@@ -33,9 +33,15 @@ open class CrudRepositoryService<T : DomainEntity, DTO : Any, DTO_S>(
         @QueryParam("last") lastPage: Long,
         @QueryParam("query") @DefaultValue("") query: String,
         @QueryParam("field") @DefaultValue("_id") sortableField: String,
-        @QueryParam("order") @DefaultValue("DESCENDING") sortOrder: SortOrder,
+        @QueryParam("order") @DefaultValue("DESC") sortOrder: SortOrder,
         @QueryParam("summary") @DefaultValue("true") summary: Boolean
     ): Collection<Any?> {
+
+        when {
+            firstPage < 0 || lastPage < 0 -> throw BadRequestHttpException("Query params first $firstPage ou last $lastPage não devem ser menores que zero.")
+            firstPage > lastPage -> throw BadRequestHttpException("Query params first $firstPage não deve ser maior que last $lastPage.")
+        }
+
         return repository.list(
             query = query,
             sort = Sort(sortableField, sortOrder),
@@ -50,7 +56,6 @@ open class CrudRepositoryService<T : DomainEntity, DTO : Any, DTO_S>(
         if (repository.exists(entity._id)) throw ConflictHttpException("Entidade com id ${entity._id} já cadastrada!")
 
         repository.insert(entity)
-
         return mapper.mapFull(entity)
     }
 

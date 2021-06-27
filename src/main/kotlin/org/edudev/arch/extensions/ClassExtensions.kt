@@ -11,7 +11,6 @@ fun <T : Any, A : Annotation> Class<T>.findAnnotationRecursively(annotation: Cla
             .map { it.findAnnotationRecursively(annotation) }
             .find { it != null }
 
-
 fun <T : DomainEntity, DTO : Any, DTO_S> T.mappedWith(
     mapper: EntityDTOMapper<T, DTO, DTO_S>,
     summary: Boolean = true

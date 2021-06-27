@@ -9,7 +9,8 @@ import org.edudev.core.persistence.MongoResource
 @QuarkusTest
 @TestHTTPEndpoint(PropertiesService::class)
 @QuarkusTestResource(MongoResource::class)
-class PropertyIntegrationTest : GenericIntegrationTest<Property, PropertyDTO, PropertySummaryDTO>(
+class PropertyIntegrationTest : GenericIntegrationTest<Property>(
     entity = propertyWithPopulatedValues,
-    dto = createPropertyDTO(propertyWithPopulatedValues)
+    dto = createPropertyDTO(propertyWithPopulatedValues),
+    dto_s = createPropertySummaryDTO(propertyWithPopulatedValues)
 )

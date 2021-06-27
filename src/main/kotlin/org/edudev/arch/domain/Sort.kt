@@ -9,6 +9,6 @@ class Sort(
 ) : Serializable
 
 enum class SortOrder(val type: String) {
-    ASCENDING("ASCENDING"),
-    DESCENDING("DESCENDING")
+    ASC("ASC"),
+    DESC("DESC")
 }

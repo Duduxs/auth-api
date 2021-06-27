@@ -9,25 +9,48 @@ import org.edudev.arch.domain.DomainEntity
 import org.edudev.arch.exceptions.NotFoundHttpException
 import org.edudev.arch.repositories.Repository
 import org.edudev.core.helpers.assertEquals
+import org.edudev.core.helpers.assertSummaryEquals
 import org.edudev.core.helpers.setNewId
+import org.edudev.domain.properties.PropertyDTO
+import org.edudev.domain.properties.PropertySummaryDTO
 import org.hamcrest.CoreMatchers.`is`
+import org.junit.Assume
+import org.junit.Ignore
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 import java.util.*
+import java.util.stream.Collectors
+import java.util.stream.Stream
 import javax.inject.Inject
+import kotlin.reflect.full.createInstance
 
 @TestInstance(PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-open class GenericIntegrationTest<E : DomainEntity, DTO : Any, DTO_S>(
+open class GenericIntegrationTest<E : DomainEntity>(
     private val entity: E,
-    private val dto: DTO
+    private val dto: Any,
+    private val dto_s: Any? = null
 ) {
     @Inject
     lateinit var repository: Repository<E>
 
+    private val entities: MutableCollection<E> = mutableListOf()
+
     @BeforeAll
     private fun init() {
         repository.insert(entity)
+        mockEntitiesForListingTests()
+    }
+
+    private fun mockEntitiesForListingTests() {
+        Stream.generate { entity::class.createInstance() }
+            .limit(5)
+            .collect(Collectors.toList())
+            .forEachIndexed { index, entity ->
+                entity.setNewId(index.toString())
+                entities.add(entity)
+                repository.insert(entity)
+            }
     }
 
     @Test
@@ -64,10 +87,28 @@ open class GenericIntegrationTest<E : DomainEntity, DTO : Any, DTO_S>(
             get("${entity._id}?summary=false")
         } Then {
             statusCode(200)
-            val expected = repository.findById(entity._id)
-                ?: throw NotFoundHttpException("Entidade com id ${entity._id} não encontrada!")
+            val expected = findEntityOrThrowNotFound(entity._id)
             val actual = extract().`as`(dto::class.java)
+
             expected.assertEquals(dto = actual)
+        }
+    }
+
+    @Test
+    @Order(3)
+    fun `Must find the correct entity summarized by id`() {
+        Assume.assumeTrue("Você precisa passar um dto summarizado se quiser executar esse teste!", dto_s != null)
+
+        Given {
+            contentType(JSON)
+        } When {
+            get(entity._id)
+        } Then {
+            statusCode(200)
+            val expected = findEntityOrThrowNotFound(entity._id)
+            val actual = extract().`as`(dto_s!!::class.java)
+
+            expected.assertSummaryEquals(dto = actual)
         }
     }
 
@@ -94,9 +135,9 @@ open class GenericIntegrationTest<E : DomainEntity, DTO : Any, DTO_S>(
             put(entity._id)
         } Then {
             statusCode(200)
-            val expected = repository.findById(entity._id)
-                ?: throw NotFoundHttpException("Entidade com id ${entity._id} não encontrada!")
+            val expected = findEntityOrThrowNotFound(entity._id)
             val actual = extract().`as`(dto::class.java)
+
             expected.assertEquals(dto = actual)
         }
     }
@@ -131,17 +172,61 @@ open class GenericIntegrationTest<E : DomainEntity, DTO : Any, DTO_S>(
 
     @Test
     @Order(8)
+    fun `Must delete entity`() {
+        Given {
+            contentType(JSON)
+        } When {
+            delete(entity._id)
+        } Then {
+            statusCode(204)
+        }
+    }
+
+    @Test
+    @Order(9)
+    fun `Must not delete entity by not found id`() {
+        Given {
+            contentType(JSON)
+        } When {
+            delete(entity._id)
+        } Then {
+            statusCode(404)
+        }
+    }
+
+    @Test
+    @Order(10)
     fun `Must not update entity by not found id`() {
-        val newId = UUID.randomUUID().toString()
-        dto.setNewId(newId)
+        dto.setNewId(entity._id)
 
         Given {
             contentType(JSON)
         } When {
             body(dto)
-            put(newId)
+            put(entity._id)
         } Then {
             statusCode(404)
         }
     }
+
+    @Test
+    @Order(11)
+    fun `Must list summarized entities from db`() {
+        Assume.assumeTrue("Você precisa passar um dto summarizado se quiser executar esse teste!", dto_s != null)
+
+        Given {
+            contentType(JSON)
+        } When {
+            get("?first=1&last=5")
+        } Then {
+            statusCode(200)
+            val values = extract().jsonPath().getList(".", dto_s!!.javaClass)
+            values.forEachIndexed { index, dto_s -> entities.elementAt(index).assertSummaryEquals(dto_s)  }
+        }
+    }
+
+    companion object : KLogging()
+
+    private fun findEntityOrThrowNotFound(id: String) =
+        repository.findById(id) ?: throw NotFoundHttpException("Entidade com id ${entity._id} não encontrada!")
 }

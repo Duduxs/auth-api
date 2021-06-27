@@ -2,11 +2,23 @@ package org.edudev.core.helpers
 
 import org.assertj.core.api.Assertions.assertThat
 import org.edudev.arch.domain.DomainEntity
+import java.lang.reflect.Field
 
 
 fun <E : DomainEntity> E.assertEquals(dto: Any) {
     assertThat(this)
         .usingRecursiveComparison()
+        .isEqualTo(dto)
+}
+
+fun <E : DomainEntity> E.assertSummaryEquals(dto: Any) {
+    val fieldsIgnored: Array<String> = getSummaryMissingFieldsName(
+        entityFields = this::class.java::getDeclaredFields.call(),
+        dtoFields = dto::class.java::getDeclaredFields.call()
+    )
+    assertThat(this)
+        .usingRecursiveComparison()
+        .ignoringFields(*fieldsIgnored)
         .isEqualTo(dto)
 }
 
@@ -22,3 +34,9 @@ fun <E: Any> E.setNewId(id: String) {
         field.set(this, id)
     }
 }
+
+fun getSummaryMissingFieldsName(entityFields: Array<Field>, dtoFields: Array<Field>) = entityFields
+    .filter { it.name !in dtoFields.map { s -> s.name } }
+    .map { it.name }
+    .toTypedArray()
+
