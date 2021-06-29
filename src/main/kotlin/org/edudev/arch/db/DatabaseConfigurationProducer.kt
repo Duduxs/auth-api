@@ -20,13 +20,15 @@ class DatabaseConfigurationProducer @Inject constructor(
     @ConfigProperty(name = "MONGODB_USERNAME", defaultValue = "") var username: Optional<String>,
     @ConfigProperty(name = "MONGODB_PASSWORD", defaultValue = "") var password: Optional<String>
 ) {
-
-    //TODO printar a url quando subir
+    init{
+        logger.warn { " * * * SUBINDO BANCO EM $url * * *" }
+    }
 
     @Produces
     fun produce() = MongoConfig(
-        url = ConnectionString(url),
-        username = username.orElse(null),
-        password = password.orElse(null)
-    )
-}
+            url = ConnectionString(url),
+            username = username.orElse(null),
+            password = password.orElse(null)
+        )
+    companion object : KLogging()
+    }

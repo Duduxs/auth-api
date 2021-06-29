@@ -8,10 +8,10 @@ import mu.KLogging
 import org.edudev.arch.domain.DomainEntity
 import org.edudev.arch.exceptions.NotFoundHttpException
 import org.edudev.arch.repositories.Repository
-import org.edudev.core.helpers.assertCollectionEquals
-import org.edudev.core.helpers.assertEquals
-import org.edudev.core.helpers.assertSummaryEquals
-import org.edudev.core.helpers.setNewId
+import org.edudev.core.helper.assertCollectionEquals
+import org.edudev.core.helper.assertEquals
+import org.edudev.core.helper.assertSummaryEquals
+import org.edudev.core.helper.setNewId
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assume
 import org.junit.jupiter.api.*
@@ -311,7 +311,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
         } Then {
             statusCode(200)
             val values = extract().jsonPath().getList(".", dto.javaClass)
-            
+
             entities.take(3).sortedByDescending { it._id }.assertCollectionEquals(values)
         }
     }

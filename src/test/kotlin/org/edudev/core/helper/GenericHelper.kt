@@ -1,8 +1,7 @@
-package org.edudev.core.helpers
+package org.edudev.core.helper
 
 import org.assertj.core.api.Assertions.assertThat
 import org.edudev.arch.domain.DomainEntity
-import org.litote.kmongo.fields
 import java.lang.reflect.Field
 
 
