@@ -20,7 +20,7 @@ class DatabaseConfigurationProducer @Inject constructor(
     @ConfigProperty(name = "MONGODB_USERNAME", defaultValue = "") var username: Optional<String>,
     @ConfigProperty(name = "MONGODB_PASSWORD", defaultValue = "") var password: Optional<String>
 ) {
-    init{
+    init {
         logger.warn { " * * * SUBINDO BANCO EM $url * * *" }
     }
 
@@ -30,5 +30,6 @@ class DatabaseConfigurationProducer @Inject constructor(
             username = username.orElse(null),
             password = password.orElse(null)
         )
+
     companion object : KLogging()
-    }
+}
