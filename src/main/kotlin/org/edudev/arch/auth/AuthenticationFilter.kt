@@ -15,14 +15,14 @@ class AuthenticationFilter : ContainerRequestFilter {
 
     override fun filter(requestContext: ContainerRequestContext) {
 
-        val basicAuthorization: StringTokenizer = requestContext
-            .getHeaderString(authorizationHeader)
-            .replace(basicAuthorizationPrefix, "")
-            .trim()
-            .decodeAsStringTokenizer()
-
-        logger.warn { basicAuthorization.nextToken() }
-        logger.warn { basicAuthorization.nextToken() }
+//        val basicAuthorization: StringTokenizer = requestContext
+//            .getHeaderString(authorizationHeader)
+//            .replace(basicAuthorizationPrefix, "")
+//            .trim()
+//            .decodeAsStringTokenizer()
+//
+//        logger.warn { basicAuthorization.nextToken() }
+//        logger.warn { basicAuthorization.nextToken() }
     }
     companion object : KLogging()
 }
