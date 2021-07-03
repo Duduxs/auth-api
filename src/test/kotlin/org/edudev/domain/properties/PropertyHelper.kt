@@ -24,23 +24,9 @@ fun createProperty(
     it.value = value
 }
 
-fun createPropertyDTO(domain: Property) = PropertyDTO(
-    createProperty(
-        _id = domain._id,
-        name = domain.name,
-        address = domain.address,
-        directionality = domain.directionality,
-        value = domain.value
-    )
-)
+fun createPropertyDTO(domain: Property) = PropertyDTO(domain)
 
-fun createPropertySummaryDTO(domain: Property) = PropertySummaryDTO(
-    createProperty(
-        _id = domain._id,
-        name = domain.name,
-        value = domain.value
-    )
-)
+fun createPropertySummaryDTO(domain: Property) = PropertySummaryDTO(domain)
 
 
 

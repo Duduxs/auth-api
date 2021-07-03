@@ -4,7 +4,6 @@ import io.restassured.http.ContentType.JSON
 import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
-import mu.KLogging
 import org.edudev.arch.domain.DomainEntity
 import org.edudev.arch.exceptions.NotFoundHttpException
 import org.edudev.arch.repositories.Repository
@@ -13,13 +12,14 @@ import org.edudev.core.helper.assertEquals
 import org.edudev.core.helper.assertSummaryEquals
 import org.edudev.core.helper.setNewId
 import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assume
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
+import org.junit.jupiter.api.condition.EnabledIf
 import java.util.stream.Collectors
 import java.util.stream.Stream
 import javax.inject.Inject
 import kotlin.reflect.full.createInstance
+
 
 @TestInstance(PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
@@ -27,7 +27,8 @@ open class GenericIntegrationTest<E : DomainEntity>(
     private val entity: E,
     private val dto: Any,
     private val dto_s: Any? = null
-) {
+)  {
+
     @Inject
     lateinit var repository: Repository<E>
 
@@ -38,6 +39,8 @@ open class GenericIntegrationTest<E : DomainEntity>(
         repository.insert(entity)
         mockEntitiesForListingTests()
     }
+
+    fun hasSummary(): Boolean = dto_s != null
 
     private fun mockEntitiesForListingTests() {
         Stream.generate { entity::class.createInstance() }
@@ -93,9 +96,8 @@ open class GenericIntegrationTest<E : DomainEntity>(
 
     @Test
     @Order(3)
+    @EnabledIf(value = "hasSummary", disabledReason = "Você precisa passar um dto summarizado se quiser executar esse teste!")
     fun `Must find the correct entity summarized by id`() {
-        Assume.assumeTrue("Você precisa passar um dto summarizado se quiser executar esse teste!", dto_s != null)
-
         Given {
             contentType(JSON)
         } When {
@@ -271,9 +273,8 @@ open class GenericIntegrationTest<E : DomainEntity>(
 
     @Test
     @Order(11)
+    @EnabledIf(value = "hasSummary", disabledReason = "Você precisa passar um dto summarizado se quiser executar esse teste!")
     fun `Must list summarized entities from db`() {
-        Assume.assumeTrue("Você precisa passar um dto summarizado se quiser executar esse teste!", dto_s != null)
-
         Given {
             contentType(JSON)
         } When {
@@ -317,7 +318,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
     }
 
 
-    companion object : KLogging()
+//    companion object : KLogging()
 
     private fun findEntityOrThrowNotFound(id: String) =
         repository.findById(id) ?: throw NotFoundHttpException("Entidade com id ${entity._id} não encontrada!")

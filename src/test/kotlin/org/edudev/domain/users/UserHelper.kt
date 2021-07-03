@@ -22,11 +22,4 @@ fun createUser(
     it.password = password
 }
 
-fun createUserDTO(user: User) = UserDTO(
-    createUser(
-    _id = user._id,
-    name = user.name,
-    email = user.email,
-    password = user.password
-    )
-)
+fun createUserDTO(user: User) = UserDTO(user)
