@@ -1,9 +1,9 @@
 package org.edudev.core.it
 
-import io.restassured.http.ContentType.JSON
 import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
+import mu.KLogging
 import org.edudev.arch.domain.DomainEntity
 import org.edudev.arch.exceptions.NotFoundHttpException
 import org.edudev.arch.repositories.Repository
@@ -24,15 +24,17 @@ import kotlin.reflect.full.createInstance
 @TestInstance(PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 open class GenericIntegrationTest<E : DomainEntity>(
+    rootPath: String,
     private val entity: E,
     private val dto: Any,
-    private val dto_s: Any? = null
+    private val dto_s: Any? = null,
 )  {
-
     @Inject
     lateinit var repository: Repository<E>
 
     private val entities: MutableCollection<E> = mutableListOf()
+
+    private val config = GenericIntegrationHeaderConfig(rootPath)
 
     @BeforeAll
     private fun init() {
@@ -40,7 +42,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
         mockEntitiesForListingTests()
     }
 
-    fun hasSummary(): Boolean = dto_s != null
+    private fun hasSummary(): Boolean = dto_s != null
 
     private fun mockEntitiesForListingTests() {
         Stream.generate { entity::class.createInstance() }
@@ -57,7 +59,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
     @Order(1)
     fun `Must assert the exactly quantity of entities in the db`() {
         Given {
-            contentType(JSON)
+            spec(config.headerConfig)
         } When {
             get("/size")
         } Then {
@@ -70,7 +72,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
     @Order(2)
     fun `Must not find the correct entity by id`() {
         Given {
-            contentType(JSON)
+            spec(config.headerConfig)
         } When {
             get("/666?summary=false")
         } Then {
@@ -82,7 +84,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
     @Order(3)
     fun `Must find the correct entity by id`() {
         Given {
-            contentType(JSON)
+            spec(config.headerConfig)
         } When {
             get("${entity._id}?summary=false")
         } Then {
@@ -99,7 +101,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
     @EnabledIf(value = "hasSummary", disabledReason = "Você precisa passar um dto summarizado se quiser executar esse teste!")
     fun `Must find the correct entity summarized by id`() {
         Given {
-            contentType(JSON)
+             spec(config.headerConfig)
         } When {
             get(entity._id)
         } Then {
@@ -115,7 +117,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
     @Order(4)
     fun `Must not insert entity`() {
         Given {
-            contentType(JSON)
+             spec(config.headerConfig)
         } When {
             body(dto)
             post()
@@ -128,7 +130,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
     @Order(5)
     fun `Must update entity`() {
         Given {
-            contentType(JSON)
+             spec(config.headerConfig)
         } When {
             body(dto)
             put(entity._id)
@@ -147,7 +149,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
         dto.setNewId("1000")
 
         Given {
-            contentType(JSON)
+             spec(config.headerConfig)
         } When {
             body(dto)
             post()
@@ -161,7 +163,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
     @Order(7)
     fun `Must not update entity by different id`() {
         Given {
-            contentType(JSON)
+             spec(config.headerConfig)
         } When {
             body(dto)
             put(entity._id)
@@ -179,7 +181,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
         }
 
         Given {
-            contentType(JSON)
+             spec(config.headerConfig)
         } When {
             delete(id)
         } Then {
@@ -191,7 +193,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
     @Order(9)
     fun `Must not delete entity by not found id`() {
         Given {
-            contentType(JSON)
+             spec(config.headerConfig)
         } When {
             delete(entity._id)
         } Then {
@@ -205,7 +207,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
         dto.setNewId(entity._id)
 
         Given {
-            contentType(JSON)
+             spec(config.headerConfig)
         } When {
             body(dto)
             put(entity._id)
@@ -224,7 +226,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
         }
 
         Given {
-            contentType(JSON)
+             spec(config.headerConfig)
         } When {
             get(expression)
         } Then {
@@ -236,7 +238,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
     @Order(11)
     fun `Must support all query params in list`() {
         Given {
-            contentType(JSON)
+             spec(config.headerConfig)
         } When {
             get("?first=0&last=9&q=entity&field=_id&order=ASC&summary=false")
         } Then {
@@ -248,7 +250,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
     @Order(11)
     fun `Must support without any query params in list`() {
         Given {
-            contentType(JSON)
+             spec(config.headerConfig)
         } When {
             get()
         } Then {
@@ -260,7 +262,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
     @Order(11)
     fun `Must list entities from db`() {
         Given {
-            contentType(JSON)
+             spec(config.headerConfig)
         } When {
             get("?order=ASC&summary=false")
         } Then {
@@ -276,7 +278,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
     @EnabledIf(value = "hasSummary", disabledReason = "Você precisa passar um dto summarizado se quiser executar esse teste!")
     fun `Must list summarized entities from db`() {
         Given {
-            contentType(JSON)
+             spec(config.headerConfig)
         } When {
             get("?order=ASC")
         } Then {
@@ -291,7 +293,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
     @Order(11)
     fun `Must return only two entities in list sorting id by ASC order`() {
         Given {
-            contentType(JSON)
+             spec(config.headerConfig)
         } When {
             get("?last=2&field=_id&order=ASC&summary=false")
         } Then {
@@ -306,7 +308,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
     @Order(11)
     fun `Must return only three entities skipping the first in list sorting id by DESC order`() {
         Given {
-            contentType(JSON)
+             spec(config.headerConfig)
         } When {
             get("?first=1&last=3&field=_id&order=DESC&summary=false")
         } Then {
@@ -318,7 +320,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
     }
 
 
-//    companion object : KLogging()
+    companion object : KLogging()
 
     private fun findEntityOrThrowNotFound(id: String) =
         repository.findById(id) ?: throw NotFoundHttpException("Entidade com id ${entity._id} não encontrada!")
