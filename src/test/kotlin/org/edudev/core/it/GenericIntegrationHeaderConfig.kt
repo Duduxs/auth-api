@@ -14,9 +14,9 @@ class GenericIntegrationHeaderConfig(rootPath: String) {
 
     val headerConfig: RequestSpecification = RequestSpecBuilder()
         .setContentType(ContentType.JSON)
-        .setBaseUri("http://localhost:$testPort${rootPath.putSlashIfDonutHave()}")
+        .setBaseUri("http://localhost:$testPort${rootPath.putSlashIfDontHave()}")
         .build()
 
 
-    private fun String.putSlashIfDonutHave() = if (this.startsWith("/")) this else "/$this"
+    private fun String.putSlashIfDontHave() = if (this.startsWith("/")) this else "/$this"
 }

@@ -12,7 +12,7 @@ class User(
 
     @field:NotNull var email: String = ""
 
-    var name: String = ""
+    var username: String = ""
 
     @field:NotNull var password: String = ""
 }

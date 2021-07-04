@@ -2,6 +2,13 @@ package org.edudev.arch.extensions
 
 import java.util.*
 
-fun String.decodeAsStringTokenizer() = String(Base64.getDecoder().decode(this)).toStringTokenizer()
+private const val basicAuthorizationPrefix = "Basic"
 
-fun String.toStringTokenizer() = StringTokenizer(this, ":")
+fun String.decodeBase64Authorization() = this
+    .removePrefix(basicAuthorizationPrefix)
+    .trim()
+    .decodeAsStringTokenizer()
+
+fun String.decodeAsStringTokenizer() = Base64.getDecoder().decode(this).toStringTokenizer()
+
+fun ByteArray.toStringTokenizer() = StringTokenizer(String(this), ":")

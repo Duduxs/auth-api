@@ -29,6 +29,7 @@ open class HttpExceptionHandler(status: HttpResponseStatus, payload: String) : E
     companion object : KLogging()
 }
 
+class UnauthorizedHttpException(payload: String = "Usuário não autorizado!") : HttpExceptionHandler(UNAUTHORIZED, payload)
 class BadRequestHttpException(payload: String = "Requisição mal feita!") : HttpExceptionHandler(BAD_REQUEST, payload)
 class NotFoundHttpException(payload: String = "Não encontrado!") : HttpExceptionHandler(NOT_FOUND, payload)
 class ConflictHttpException(payload: String = "Conflito!") : HttpExceptionHandler(CONFLICT, payload)

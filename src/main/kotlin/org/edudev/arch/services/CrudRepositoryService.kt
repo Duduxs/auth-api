@@ -1,5 +1,6 @@
 package org.edudev.arch.services
 
+import org.edudev.arch.auth.Restricted
 import org.edudev.arch.domain.*
 import org.edudev.arch.dtos.EntityDTOMapper
 import org.edudev.arch.exceptions.BadRequestHttpException
@@ -18,16 +19,19 @@ open class CrudRepositoryService<T : DomainEntity, DTO : Any, DTO_S>(
 ) {
     @GET
     @Path("/size")
+    @Restricted
     fun count() = repository.size()
 
     @GET
     @Path("{_id}")
+    @Restricted
     fun findById(@PathParam("_id") id: String, @QueryParam("summary") @DefaultValue("true") summary: Boolean): Any? {
         val entity = baseEntityFromPath(id)
         return entity.mappedWith(mapper, summary)
     }
 
     @GET
+    @Restricted
     fun list(
         @QueryParam("first") @DefaultValue("0") firstPage: Long,
         @QueryParam("last") @DefaultValue("10") lastPage: Long,
@@ -61,6 +65,7 @@ open class CrudRepositoryService<T : DomainEntity, DTO : Any, DTO_S>(
 
     @PUT
     @Path("{_id}")
+    @Restricted
     fun update(@PathParam("_id") id: String, dto: DTO): DTO {
         val entity = mapper.unmap(dto)
 
@@ -75,6 +80,7 @@ open class CrudRepositoryService<T : DomainEntity, DTO : Any, DTO_S>(
 
     @DELETE
     @Path("{_id}")
+    @Restricted
     fun delete(@PathParam("_id") id: String) {
         val entity = baseEntityFromPath(id)
         repository.remove(entity)

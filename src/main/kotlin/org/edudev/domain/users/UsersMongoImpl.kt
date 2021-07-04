@@ -1,5 +1,6 @@
 package org.edudev.domain.users
 
+import com.mongodb.client.model.Filters.eq
 import org.edudev.arch.db.MongoConfig
 import org.edudev.arch.repositoriesImpl.GenericRepositoryMongoImpl
 import javax.enterprise.context.Dependent
@@ -11,4 +12,10 @@ class UsersMongoImpl @Inject constructor(
 ) : GenericRepositoryMongoImpl<User>(
     entityClass = User::class.java,
     mongoConfig = mongoConfig
-), Users
+), Users {
+
+    override fun findByUsernameAndPassword(username: String, password: String): User? = findWith(
+        eq("username", username),
+        eq("password", password)
+    ).first()
+}
