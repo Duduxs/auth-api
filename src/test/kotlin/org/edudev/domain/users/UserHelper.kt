@@ -9,6 +9,12 @@ val userWithPopulatedValues = createUser(
     password = "eduardo123"
 )
 
+fun createAdminUser() = createUser(
+    username = "Duduxs",
+    email = "Duduxss3@gmail.com",
+    password = "123"
+)
+
 fun createUser(
     _id: String = UUID.randomUUID().toString(),
     username: String = "",

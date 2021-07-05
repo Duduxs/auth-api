@@ -15,7 +15,7 @@ class AuthenticationFilter : ContainerRequestFilter {
 
     private val authorizationHeader = "Authorization"
 
-    @Inject private lateinit var users: Users
+    @Inject lateinit var users: Users
 
     override fun filter(requestContext: ContainerRequestContext) {
 

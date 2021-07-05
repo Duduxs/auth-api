@@ -40,3 +40,6 @@ fun getSummaryMissingFieldsName(entityFields: Array<Field>, dtoFields: Array<Fie
     .map { it.name }
     .toTypedArray()
 
+fun String?.orDefaultTestPort() = this ?: "8084"
+
+fun String.putSlashAtStartIfDontHave() = if (this.startsWith("/")) this else "/$this"

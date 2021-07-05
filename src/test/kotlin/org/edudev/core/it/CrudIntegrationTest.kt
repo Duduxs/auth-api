@@ -11,6 +11,8 @@ import org.edudev.core.helper.assertCollectionEquals
 import org.edudev.core.helper.assertEquals
 import org.edudev.core.helper.assertSummaryEquals
 import org.edudev.core.helper.setNewId
+import org.edudev.domain.users.Users
+import org.edudev.domain.users.createAdminUser
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
@@ -23,24 +25,31 @@ import kotlin.reflect.full.createInstance
 
 @TestInstance(PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-open class GenericIntegrationTest<E : DomainEntity>(
+open class CrudIntegrationTest<E : DomainEntity>(
     rootPath: String,
     private val entity: E,
     private val dto: Any,
     private val dto_s: Any? = null,
 )  {
+
     @Inject
     lateinit var repository: Repository<E>
 
+    @Inject
+    lateinit var users: Users
+
     private val entities: MutableCollection<E> = mutableListOf()
 
-    private val config = GenericIntegrationHeaderConfig(rootPath)
+    private val config = CrudIntegrationHeaderConfig(rootPath)
 
     @BeforeAll
     private fun init() {
         repository.insert(entity)
+        users.insert(createAdminUser())
         mockEntitiesForListingTests()
     }
+
+    companion object : KLogging()
 
     private fun hasSummary(): Boolean = dto_s != null
 
@@ -63,6 +72,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
         } When {
             get("/size")
         } Then {
+
             statusCode(200)
             body(`is`(repository.size().toString()))
         }
@@ -264,7 +274,7 @@ open class GenericIntegrationTest<E : DomainEntity>(
         Given {
              spec(config.headerConfig)
         } When {
-            get("?order=ASC&summary=false")
+            get("?order=ASC&last=4&summary=false")
         } Then {
             statusCode(200)
             val values = extract().jsonPath().getList(".", dto.javaClass)
@@ -303,24 +313,6 @@ open class GenericIntegrationTest<E : DomainEntity>(
             entities.filter { it._id.toInt() < 2 }.assertCollectionEquals(values)
         }
     }
-
-    @Test
-    @Order(11)
-    fun `Must return only three entities skipping the first in list sorting id by DESC order`() {
-        Given {
-             spec(config.headerConfig)
-        } When {
-            get("?first=1&last=3&field=_id&order=DESC&summary=false")
-        } Then {
-            statusCode(200)
-            val values = extract().jsonPath().getList(".", dto.javaClass)
-
-            entities.take(3).sortedByDescending { it._id }.assertCollectionEquals(values)
-        }
-    }
-
-
-    companion object : KLogging()
 
     private fun findEntityOrThrowNotFound(id: String) =
         repository.findById(id) ?: throw NotFoundHttpException("Entidade com id ${entity._id} não encontrada!")

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 class UserDTOTest {
 
     private val user = createUser(
-        name = "Edward J",
+        username = "Edward J",
         email = "edudev142@hotmail.com",
         password = "edu2445"
     )
