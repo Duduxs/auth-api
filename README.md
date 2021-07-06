@@ -73,7 +73,7 @@ Now access on your browser: http://localhost:8080 [Tests -> 8084]
 -  Make a push to your branch: `git push origin my-feature`.
 
 ## :memo: License
-This project is under the MIT license. See the [LICENSE](https://github.com/Duduxs/weather-app/blob/master/LICENSE) for more information.
+This project is under the MIT license. See the [LICENSE](https://github.com/Duduxs/auth-api/blob/main/LICENSE) for more information.
 
 ---
 
