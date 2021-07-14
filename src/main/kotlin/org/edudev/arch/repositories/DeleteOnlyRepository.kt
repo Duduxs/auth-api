@@ -6,6 +6,4 @@ interface DeleteOnlyRepository<T : DomainEntity> {
 
     fun remove(entity: T)
 
-    fun removeAll(entities: Collection<T>)
-
 }

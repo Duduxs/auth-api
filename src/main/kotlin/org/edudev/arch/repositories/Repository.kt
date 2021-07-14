@@ -3,8 +3,6 @@ package org.edudev.arch.repositories
 import org.edudev.arch.domain.DomainEntity
 import org.edudev.arch.domain.Page
 import org.edudev.arch.domain.Sort
-import javax.enterprise.context.ApplicationScoped
-
 
 
 interface Repository<T : DomainEntity> : ReadOnlyRepository<T>, InsertOnlyRepository<T>, UpdateOnlyRepository<T>, DeleteOnlyRepository<T>{
@@ -14,8 +12,6 @@ interface Repository<T : DomainEntity> : ReadOnlyRepository<T>, InsertOnlyReposi
             return object : Repository<T> {
 
                 override fun remove(entity: T) = throw UnsupportedOperationException("Method not implemented!")
-
-                override fun removeAll(entities: Collection<T>) = throw UnsupportedOperationException("Method not implemented!")
 
                 override fun insert(entity: T) = throw UnsupportedOperationException("Method not implemented!")
 

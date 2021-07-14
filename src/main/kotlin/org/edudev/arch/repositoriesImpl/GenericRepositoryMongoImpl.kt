@@ -1,27 +1,28 @@
 package org.edudev.arch.repositoriesImpl
 
 import com.mongodb.client.FindIterable
+import com.mongodb.client.MongoClients
 import com.mongodb.client.MongoCollection
-import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Filters.and
 import com.mongodb.client.model.Filters.eq
-import com.mongodb.reactivestreams.client.FindPublisher
+import dev.morphia.Datastore
+import dev.morphia.Morphia
 import org.bson.BsonDocument
 import org.bson.BsonRegularExpression
 import org.bson.conversions.Bson
 import org.edudev.arch.db.MongoConfig
-import org.edudev.arch.domain.*
+import org.edudev.arch.domain.DomainEntity
+import org.edudev.arch.domain.Entity
+import org.edudev.arch.domain.Page
+import org.edudev.arch.domain.Sort
 import org.edudev.arch.extensions.findAnnotationRecursively
 import org.edudev.arch.extensions.page
 import org.edudev.arch.extensions.sort
 import org.edudev.arch.repositories.Repository
-import org.litote.kmongo.KMongo
-import org.litote.kmongo.findOneById
-import java.util.concurrent.locks.Condition
 
 
 open class GenericRepositoryMongoImpl<T : DomainEntity>(
-    private val entityClass: Class<T>,
+    entityClass: Class<T>,
     mongoConfig: MongoConfig
 ) : Repository<T> {
 
@@ -31,9 +32,15 @@ open class GenericRepositoryMongoImpl<T : DomainEntity>(
         ?: entityClass.simpleName
         ?: throw IllegalArgumentException("Can't get collection name 4 $entityClass /;")
 
-    private val collection: MongoCollection<T> = KMongo.createClient(mongoConfig.url)
-        .getDatabase(mongoConfig.url.database!!)
-        .getCollection(collectionName, entityClass)
+    private val client = MongoClients.create(mongoConfig.url)
+
+    private val datastore = Morphia.createDatastore(client, mongoConfig.url.database!!)
+
+    init {
+        datastore.mapper.mapPackage("org.edudev.domain")
+    }
+
+    private val collection: MongoCollection<T> = datastore.database.getCollection(collectionName, entityClass)
 
     protected open fun findWith(vararg conditions: Bson?): FindIterable<T> = findWith(listOf(*conditions))
 
@@ -42,10 +49,9 @@ open class GenericRepositoryMongoImpl<T : DomainEntity>(
         else this.collection.find(and(*it.toTypedArray()))
     }
 
-
     override fun findById(id: String) = collection
-        .findOneById(id)
-        ?.takeIf { entityClass.isInstance(it) }
+        .find(eq("_id", id))
+        .firstOrNull()
 
     override fun list(query: String, sort: Sort, page: Page): Collection<T> {
         return textSearch(query)
@@ -66,10 +72,6 @@ open class GenericRepositoryMongoImpl<T : DomainEntity>(
 
     override fun remove(entity: T) {
         collection.deleteOne(eq(entity._id))
-    }
-
-    override fun removeAll(entities: Collection<T>) {
-        collection.deleteMany(eq("_id", entities))
     }
 
     private fun textSearch(value: String?): FindIterable<T> =

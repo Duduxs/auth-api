@@ -1,13 +1,14 @@
 package org.edudev.domain.users
 
+import dev.morphia.annotations.Entity
+import dev.morphia.annotations.Id
 import org.edudev.arch.domain.DomainEntity
-import org.edudev.arch.domain.Entity
 import org.jetbrains.annotations.NotNull
 import java.util.*
 
-@Entity("Users")
+@Entity("Users", )
 class User(
-    override val _id: String = UUID.randomUUID().toString(),
+    @Id override val _id: String = UUID.randomUUID().toString(),
 ) : DomainEntity {
 
     @field:NotNull var email: String = ""
