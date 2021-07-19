@@ -34,7 +34,7 @@ class PropertyDTOTest {
 
     @Test
     fun `Must update property in the update method`() {
-        val newProperty = createProperty(propertyDTO._id)
+        val newProperty = createProperty(propertyDTO.id)
 
         propertyDTO.update(newProperty)
         newProperty.assertEquals(propertyDTO)

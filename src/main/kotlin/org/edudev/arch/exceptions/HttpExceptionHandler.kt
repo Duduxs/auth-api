@@ -34,4 +34,5 @@ class BadRequestHttpException(payload: String = "Requisição mal feita!") : Htt
 class NotFoundHttpException(payload: String = "Não encontrado!") : HttpExceptionHandler(NOT_FOUND, payload)
 class ConflictHttpException(payload: String = "Conflito!") : HttpExceptionHandler(CONFLICT, payload)
 class NotAcceptableHttpException(payload: String = "Não Aceito!") : HttpExceptionHandler(NOT_ACCEPTABLE, payload)
+class UnprocessableEntityHttpException(payload: String = "Entidade não processada") : HttpExceptionHandler(UNPROCESSABLE_ENTITY, payload)
 

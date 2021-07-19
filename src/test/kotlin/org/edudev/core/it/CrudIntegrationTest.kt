@@ -96,10 +96,10 @@ open class CrudIntegrationTest<E : DomainEntity>(
         Given {
             spec(config.headerConfig)
         } When {
-            get("${entity._id}?summary=false")
+            get("${entity.id}?summary=false")
         } Then {
             statusCode(200)
-            val expected = findEntityOrThrowNotFound(entity._id)
+            val expected = findEntityOrThrowNotFound(entity.id)
             val actual = extract().`as`(dto::class.java)
 
             expected.assertEquals(dto = actual)
@@ -113,10 +113,10 @@ open class CrudIntegrationTest<E : DomainEntity>(
         Given {
              spec(config.headerConfig)
         } When {
-            get(entity._id)
+            get(entity.id)
         } Then {
             statusCode(200)
-            val expected = findEntityOrThrowNotFound(entity._id)
+            val expected = findEntityOrThrowNotFound(entity.id)
             val actual = extract().`as`(dto_s!!::class.java)
 
             expected.assertSummaryEquals(dto = actual)
@@ -143,10 +143,10 @@ open class CrudIntegrationTest<E : DomainEntity>(
              spec(config.headerConfig)
         } When {
             body(dto)
-            put(entity._id)
+            put(entity.id)
         } Then {
             statusCode(200)
-            val expected = findEntityOrThrowNotFound(entity._id)
+            val expected = findEntityOrThrowNotFound(entity.id)
             val actual = extract().`as`(dto::class.java)
 
             expected.assertEquals(dto = actual)
@@ -176,7 +176,7 @@ open class CrudIntegrationTest<E : DomainEntity>(
              spec(config.headerConfig)
         } When {
             body(dto)
-            put(entity._id)
+            put(entity.id)
         } Then {
             statusCode(406)
         }
@@ -186,7 +186,7 @@ open class CrudIntegrationTest<E : DomainEntity>(
     @Order(8)
     fun `Must delete entities`(repetitionInfo: RepetitionInfo) {
         val id = when (repetitionInfo.currentRepetition) {
-            1 -> entity._id
+            1 -> entity.id
             else -> "1000"
         }
 
@@ -205,7 +205,7 @@ open class CrudIntegrationTest<E : DomainEntity>(
         Given {
              spec(config.headerConfig)
         } When {
-            delete(entity._id)
+            delete(entity.id)
         } Then {
             statusCode(404)
         }
@@ -214,13 +214,13 @@ open class CrudIntegrationTest<E : DomainEntity>(
     @Test
     @Order(10)
     fun `Must not update entity by not found id`() {
-        dto.setNewId(entity._id)
+        dto.setNewId(entity.id)
 
         Given {
              spec(config.headerConfig)
         } When {
             body(dto)
-            put(entity._id)
+            put(entity.id)
         } Then {
             statusCode(404)
         }
@@ -310,10 +310,10 @@ open class CrudIntegrationTest<E : DomainEntity>(
             statusCode(200)
             val values = extract().jsonPath().getList(".", dto.javaClass)
 
-            entities.filter { it._id.toInt() < 2 }.assertCollectionEquals(values)
+            entities.filter { it.id.toInt() < 2 }.assertCollectionEquals(values)
         }
     }
 
     private fun findEntityOrThrowNotFound(id: String) =
-        repository.findById(id) ?: throw NotFoundHttpException("Entidade com id ${entity._id} não encontrada!")
+        repository.findById(id) ?: throw NotFoundHttpException("Entidade com id ${entity.id} não encontrada!")
 }

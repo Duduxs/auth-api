@@ -23,7 +23,7 @@ class UserDTOTest {
 
     @Test
     fun `Must update User in update method`(){
-        val newUser = createUser(dto._id)
+        val newUser = createUser(dto.id)
 
         dto.update(newUser)
         newUser.assertEquals(dto)

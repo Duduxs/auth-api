@@ -15,7 +15,8 @@ class AuthenticationFilter : ContainerRequestFilter {
 
     private val authorizationHeader = "Authorization"
 
-    @Inject lateinit var users: Users
+    @Inject
+    lateinit var users: Users
 
     override fun filter(requestContext: ContainerRequestContext) {
 
@@ -26,8 +27,10 @@ class AuthenticationFilter : ContainerRequestFilter {
         validateCredentials(basicAuth.nextToken(), basicAuth.nextToken())
     }
 
-    private fun validateCredentials(username: String, password: String) =
-        users.findByUsernameAndPassword(username, password) ?: throw UnauthorizedHttpException()
+    private fun validateCredentials(username: String, password: String) {
+        if (users.existsByUsernameAndPassword(username, password)) return
+        throw UnauthorizedHttpException()
+    }
 }
 
 

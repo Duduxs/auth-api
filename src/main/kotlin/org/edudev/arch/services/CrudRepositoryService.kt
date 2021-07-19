@@ -1,12 +1,12 @@
 package org.edudev.arch.services
 
+import com.mongodb.MongoWriteException
+import dev.morphia.query.UpdateException
+import mu.KLogging
 import org.edudev.arch.auth.Restricted
 import org.edudev.arch.domain.*
 import org.edudev.arch.dtos.EntityDTOMapper
-import org.edudev.arch.exceptions.BadRequestHttpException
-import org.edudev.arch.exceptions.ConflictHttpException
-import org.edudev.arch.exceptions.NotAcceptableHttpException
-import org.edudev.arch.exceptions.NotFoundHttpException
+import org.edudev.arch.exceptions.*
 import org.edudev.arch.extensions.mappedWith
 import org.edudev.arch.repositories.Repository
 import org.jboss.resteasy.annotations.jaxrs.PathParam
@@ -19,13 +19,12 @@ open class CrudRepositoryService<T : DomainEntity, DTO : Any, DTO_S>(
 ) {
     @GET
     @Path("/size")
-    @Restricted
     fun count() = repository.size()
 
     @GET
-    @Path("{_id}")
+    @Path("{id}")
     @Restricted
-    fun findById(@PathParam("_id") id: String, @QueryParam("summary") @DefaultValue("true") summary: Boolean): Any? {
+    fun findById(@PathParam("id") id: String, @QueryParam("summary") @DefaultValue("true") summary: Boolean): Any? {
         val entity = baseEntityFromPath(id)
         return entity.mappedWith(mapper, summary)
     }
@@ -33,10 +32,10 @@ open class CrudRepositoryService<T : DomainEntity, DTO : Any, DTO_S>(
     @GET
     @Restricted
     fun list(
-        @QueryParam("first") @DefaultValue("0") firstPage: Long,
-        @QueryParam("last") @DefaultValue("10") lastPage: Long,
+        @QueryParam("first") @DefaultValue("0") firstPage: Int,
+        @QueryParam("last") @DefaultValue("10") lastPage: Int,
         @QueryParam("q") @DefaultValue("") query: String,
-        @QueryParam("field") @DefaultValue("_id") sortableField: String,
+        @QueryParam("field") @DefaultValue("id") sortableField: String,
         @QueryParam("order") @DefaultValue("DESC") sortOrder: SortOrder,
         @QueryParam("summary") @DefaultValue("true") summary: Boolean
     ): Collection<Any?> {
@@ -57,37 +56,48 @@ open class CrudRepositoryService<T : DomainEntity, DTO : Any, DTO_S>(
     fun save(dto: DTO): DTO {
         val entity = mapper.unmap(dto)
 
-        if (repository.exists(entity._id)) throw ConflictHttpException("Entidade com id ${entity._id} já cadastrada!")
+        try {
+            repository.insert(entity)
+        } catch (e: MongoWriteException) {
+            throw ConflictHttpException("Entidade com id ou email já cadastrados no banco")
+        }
 
-        repository.insert(entity)
         return mapper.mapFull(entity)
     }
 
     @PUT
-    @Path("{_id}")
+    @Path("{id}")
     @Restricted
-    fun update(@PathParam("_id") id: String, dto: DTO): DTO {
+    fun update(@PathParam("id") id: String, dto: DTO): DTO {
         val entity = mapper.unmap(dto)
 
         when {
-            id != entity._id -> throw NotAcceptableHttpException("Uri ID [$id] e Body ID [${entity._id}] incompatíveis!")
+            id != entity.id -> throw NotAcceptableHttpException("Uri ID [$id] e Body ID [${entity.id}] incompatíveis!")
             !repository.exists(id) -> throw NotFoundHttpException("A entitidade com id $id não existe!")
         }
 
-        repository.update(entity)
-        return mapper.mapFull(entity)
+        try {
+            repository.update(entity)
+        } catch (e : UpdateException){
+            throw UnprocessableEntityHttpException("A entidade não recebeu novos dados para ser atualizada!")
+        }
+
+         return mapper.mapFull(entity)
     }
 
     @DELETE
-    @Path("{_id}")
+    @Path("{id}")
     @Restricted
-    fun delete(@PathParam("_id") id: String) {
+    fun delete(@PathParam("id") id: String) {
         val entity = baseEntityFromPath(id)
         repository.remove(entity)
     }
 
+    companion object : KLogging()
+
     private fun baseEntityFromPath(id: String) =
         repository.findById(id) ?: throw NotFoundHttpException("Entidade com id $id não encontrada!")
+
 }
 
 

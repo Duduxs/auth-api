@@ -4,7 +4,7 @@ import org.edudev.domain.properties.directionalities.Directionality
 import java.util.*
 
 val propertyWithPopulatedValues: Property = createProperty(
-    _id = UUID.randomUUID().toString(),
+    id = UUID.randomUUID().toString(),
     name = "Propriedade de dominio",
     address = "Endereço de dominio",
     directionality = Directionality.SELL,
@@ -12,12 +12,12 @@ val propertyWithPopulatedValues: Property = createProperty(
 )
 
 fun createProperty(
-    _id: String = UUID.randomUUID().toString(),
+    id: String = UUID.randomUUID().toString(),
     name: String = "",
     address: String = "",
     directionality: Directionality = Directionality.RENT,
     value: Double = 0.0
-) = Property(_id = _id).also {
+) = Property(id = id).also {
     it.name = name
     it.address = address
     it.directionality = directionality

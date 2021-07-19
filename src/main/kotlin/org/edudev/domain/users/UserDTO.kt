@@ -5,20 +5,21 @@ import java.util.*
 
 @NoArg
 data class UserDTO(
-    val _id: String = UUID.randomUUID().toString(),
+    val id: String = UUID.randomUUID().toString(),
     val username: String,
     val email: String,
     val password: String
 ) {
+
     constructor(user: User) : this(
-        user._id,
+        user.id,
         user.username,
         user.email,
         user.password
     )
 
     fun update(user: User) = user.also {
-        require(it._id == _id) { "Incompatible Id" }
+        require(it.id == id) { "Incompatible Id" }
         it.username = username
         it.email = email
         it.password = password

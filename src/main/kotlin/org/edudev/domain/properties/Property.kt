@@ -1,14 +1,16 @@
 package org.edudev.domain.properties
 
+import dev.morphia.annotations.*
+import dev.morphia.utils.IndexType
 import org.edudev.arch.domain.DomainEntity
-import org.edudev.arch.domain.Entity
 import org.edudev.domain.properties.directionalities.Directionality
 import org.jetbrains.annotations.NotNull
 import java.util.*
 
-@Entity("Properties")
+@Entity("properties", useDiscriminator = false)
+@Indexes(Index(fields = arrayOf(Field(value = "$**", type = IndexType.TEXT))))
 data class Property(
-    override val _id: String = UUID.randomUUID().toString(),
+    @Id override val id: String = UUID.randomUUID().toString(),
 ) : DomainEntity {
 
     @field:NotNull

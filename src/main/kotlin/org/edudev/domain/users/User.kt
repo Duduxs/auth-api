@@ -1,14 +1,18 @@
 package org.edudev.domain.users
 
-import dev.morphia.annotations.Entity
-import dev.morphia.annotations.Id
+import dev.morphia.annotations.*
+import dev.morphia.utils.IndexType
 import org.edudev.arch.domain.DomainEntity
 import org.jetbrains.annotations.NotNull
 import java.util.*
 
-@Entity("Users", )
+@Indexes(
+    Index(fields = arrayOf(Field(value = "$**", type = IndexType.TEXT))),
+    Index(fields = arrayOf(Field(value = "email")), options = IndexOptions(unique = true))
+)
+@Entity(value = "users", useDiscriminator = false)
 class User(
-    @Id override val _id: String = UUID.randomUUID().toString(),
+    @Id override val id: String = UUID.randomUUID().toString(),
 ) : DomainEntity {
 
     @field:NotNull var email: String = ""

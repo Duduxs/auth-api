@@ -11,5 +11,5 @@ class PropertyDTOMapper @Inject constructor(
     dtoType = PropertyDTO::class,
     fullMapper = { PropertyDTO(it) },
     summaryMapper = { PropertySummaryDTO(it) },
-    fullUnmapper = { dto -> dto.update( properties.findById(dto._id) ?: Property(dto._id) ) }
+    fullUnmapper = { dto -> dto.update( properties.findById(dto.id) ?: Property(dto.id) ) }
 )

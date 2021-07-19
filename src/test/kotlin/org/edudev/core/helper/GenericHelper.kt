@@ -13,8 +13,8 @@ fun <E : DomainEntity> E.assertEquals(dto: Any) {
 
 fun <E : DomainEntity> E.assertSummaryEquals(dto: Any) {
     val fieldsIgnored: Array<String> = getSummaryMissingFieldsName(
-        entityFields = this::class.java::getDeclaredFields.call(),
-        dtoFields = dto::class.java::getDeclaredFields.call()
+        entityFields = this::class.java::getDeclaredFields.invoke(),
+        dtoFields = dto::class.java::getDeclaredFields.invoke(),
     )
     assertThat(this)
         .usingRecursiveComparison()
@@ -29,7 +29,7 @@ fun <E : Collection<DomainEntity>> E.assertCollectionEquals(dtos: Collection<Any
 }
 
 fun <E: Any> E.setNewId(id: String) {
-    this::class.java.getDeclaredField("_id").also { field ->
+    this::class.java.getDeclaredField("id").also { field ->
         field.isAccessible = true
         field.set(this, id)
     }

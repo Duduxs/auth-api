@@ -3,7 +3,7 @@ package org.edudev.domain.users
 import java.util.*
 
 val userWithPopulatedValues = createUser(
-    _id = UUID.randomUUID().toString(),
+    id = UUID.randomUUID().toString(),
     username = "Eduardo Jose",
     email = "duduxss3@gmail.com",
     password = "eduardo123"
@@ -16,12 +16,12 @@ fun createAdminUser() = createUser(
 )
 
 fun createUser(
-    _id: String = UUID.randomUUID().toString(),
+    id: String = UUID.randomUUID().toString(),
     username: String = "",
     email: String = "",
     password: String = ""
 ) = User(
-    _id = _id,
+    id = id,
 ).also {
     it.username = username
     it.email = email

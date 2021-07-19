@@ -1,6 +1,6 @@
 package org.edudev.domain.users
 
-import com.mongodb.client.model.Filters.eq
+import dev.morphia.query.experimental.filters.Filters.eq
 import org.edudev.arch.db.MongoConfig
 import org.edudev.arch.repositoriesImpl.GenericRepositoryMongoImpl
 import javax.enterprise.context.Dependent
@@ -14,8 +14,9 @@ class UsersMongoImpl @Inject constructor(
     mongoConfig = mongoConfig
 ), Users {
 
-    override fun findByUsernameAndPassword(username: String, password: String): User? = findWith(
+    override fun existsByUsernameAndPassword(username: String, password: String): Boolean =
+        findWith(
         eq("username", username),
         eq("password", password)
-    ).first()
+    ).count() > 0
 }

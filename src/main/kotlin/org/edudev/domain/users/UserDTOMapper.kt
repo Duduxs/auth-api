@@ -11,5 +11,5 @@ class UserDTOMapper @Inject constructor(
     dtoType = UserDTO::class,
     fullMapper = { UserDTO(it) },
     summaryMapper = { UserDTO(it) },
-    fullUnmapper = { dto -> dto.update(users.findById(dto._id) ?: User(dto._id)) }
+    fullUnmapper = { dto -> dto.update(users.findById(dto.id) ?: User(dto.id)) }
 )
