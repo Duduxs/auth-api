@@ -1,4 +1,4 @@
-package org.edudev.core.helper
+package org.edudev.core.configs
 
 import org.assertj.core.api.Assertions.assertThat
 import org.edudev.arch.domain.DomainEntity
@@ -28,7 +28,7 @@ fun <E : Collection<DomainEntity>> E.assertCollectionEquals(dtos: Collection<Any
         .isEqualTo(dtos)
 }
 
-fun <E: Any> E.setNewId(id: String) {
+fun <E : Any> E.setNewId(id: String) {
     this::class.java.getDeclaredField("id").also { field ->
         field.isAccessible = true
         field.set(this, id)
@@ -40,6 +40,3 @@ fun getSummaryMissingFieldsName(entityFields: Array<Field>, dtoFields: Array<Fie
     .map { it.name }
     .toTypedArray()
 
-fun String?.orDefaultTestPort() = this ?: "8084"
-
-fun String.putSlashAtStartIfDontHave() = if (this.startsWith("/")) this else "/$this"

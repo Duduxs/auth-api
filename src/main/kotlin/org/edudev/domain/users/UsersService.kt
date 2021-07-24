@@ -1,6 +1,6 @@
 package org.edudev.domain.users
 
-import org.edudev.arch.services.CrudRepositoryService
+import org.edudev.arch.services.CrudService
 import javax.inject.Inject
 import javax.ws.rs.Consumes
 import javax.ws.rs.Path
@@ -11,9 +11,10 @@ import javax.ws.rs.core.MediaType.APPLICATION_JSON
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 class UsersService @Inject constructor(
-    users: Users,
+    val users: Users,
     userDTOMapper: UserDTOMapper
-) : CrudRepositoryService<User, UserDTO, UserDTO>(
+) : CrudService<User, UserDTO, UserDTO>(
     repository = users,
     mapper = userDTOMapper
 )
+

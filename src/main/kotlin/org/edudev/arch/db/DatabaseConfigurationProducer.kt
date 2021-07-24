@@ -21,7 +21,7 @@ class DatabaseConfigurationProducer @Inject constructor(
     @ConfigProperty(name = "MONGODB_PASSWORD", defaultValue = "") var password: Optional<String>
 ) {
     init {
-        logger.warn { " * * * SUBINDO BANCO EM $url * * *" }
+        logger.info { " * * * SUBINDO BANCO EM $url * * *" }
     }
 
     @Produces

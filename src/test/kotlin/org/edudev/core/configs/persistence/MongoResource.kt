@@ -1,4 +1,4 @@
-package org.edudev.core.persistence
+package org.edudev.core.configs.persistence
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager
 import mu.KLogging

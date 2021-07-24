@@ -1,29 +1,26 @@
 package org.edudev.domain.users
 
-import org.edudev.core.helper.assertEquals
+import org.edudev.core.configs.assertEquals
 import org.junit.Test
-import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 
-@TestInstance(PER_CLASS)
 class UserDTOTest {
 
-    private val user = createUser(
-        username = "Edward J",
-        email = "edudev142@hotmail.com",
-        password = "edu2445"
-    )
-
-    private val dto = createUserDTO(user)
+    private val user = User().also {
+        it.username = "Edward J"
+        it.email = "edudev142@hotmail.com"
+        it.password = "edu2445"
+    }
 
     @Test
     fun `UserDTO must be instantiable`(){
+        val dto = UserDTO(user)
         user.assertEquals(dto)
     }
 
     @Test
     fun `Must update User in update method`(){
-        val newUser = createUser(dto.id)
+        val dto = UserDTO(user)
+        val newUser = User(dto.id)
 
         dto.update(newUser)
         newUser.assertEquals(dto)
