@@ -6,6 +6,7 @@ import dev.morphia.query.FindOptions
 import dev.morphia.query.Query
 import dev.morphia.query.experimental.filters.Filter
 import dev.morphia.query.experimental.filters.Filters.*
+import mu.KLogging
 import org.edudev.arch.db.MongoConfig
 import org.edudev.arch.domain.DomainEntity
 import org.edudev.arch.domain.Page
@@ -15,6 +16,7 @@ import org.edudev.arch.extensions.sorted
 import org.edudev.arch.repositories.Repository
 import org.edudev.domain.properties.Property
 import org.edudev.domain.users.User
+import org.edudev.domain.users.profile.Profile
 
 open class GenericRepositoryMongoImpl<T : DomainEntity>(
     val entityClass: Class<T>,
@@ -26,7 +28,7 @@ open class GenericRepositoryMongoImpl<T : DomainEntity>(
     private val datastore = Morphia.createDatastore(client, mongoConfig.url.database!!)
 
     init {
-        datastore.mapper.map(User::class.java, Property::class.java)
+        datastore.mapper.map(User::class.java, Property::class.java, Profile::class.java)
         datastore.ensureIndexes()
     }
 
@@ -70,6 +72,8 @@ open class GenericRepositoryMongoImpl<T : DomainEntity>(
     private fun Query<T>.textSearch(value: String?): Query<T> =
         if (value.isNullOrEmpty()) datastore.find(entityClass)
         else datastore.find(entityClass).filter(text(value))
+
+    companion object : KLogging()
 }
 
 

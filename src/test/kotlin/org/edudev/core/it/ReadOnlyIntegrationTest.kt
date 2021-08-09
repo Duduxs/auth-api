@@ -9,6 +9,7 @@ import org.edudev.arch.repositories.Repository
 import org.edudev.core.configs.*
 import org.edudev.domain.users.User
 import org.edudev.domain.users.Users
+import org.edudev.domain.users.profile.Profiles
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.condition.EnabledIf
@@ -33,6 +34,9 @@ open class ReadOnlyIntegrationTest<E : DomainEntity, DTO : Any, DTO_S>(
     @Inject
     lateinit var users: Users
 
+    @Inject
+    lateinit var profile: Profiles
+
     private val entities: MutableCollection<E> = mutableListOf()
 
     @BeforeAll
@@ -42,7 +46,7 @@ open class ReadOnlyIntegrationTest<E : DomainEntity, DTO : Any, DTO_S>(
     }
 
     private fun prepareAuthenticationHeader() {
-        config = CrudIntegrationHeaderConfig(rootPath, users)
+        config = CrudIntegrationHeaderConfig(rootPath, users, profile)
         config.createDefaultAuthentication()
     }
 
@@ -51,7 +55,10 @@ open class ReadOnlyIntegrationTest<E : DomainEntity, DTO : Any, DTO_S>(
             .limit(3)
             .collect(Collectors.toList())
             .forEachIndexed { index, entity ->
-                if(entity is User) entity.email = index.toString()
+                if(entity is User) {
+                    entity.email = index.toString()
+                    entity.username = index.toString()
+                }
                 entity.setNewId(index.toString())
 
                 entities.add(entity)

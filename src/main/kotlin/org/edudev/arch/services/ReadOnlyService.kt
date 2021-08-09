@@ -1,6 +1,6 @@
 package org.edudev.arch.services
 
-import org.edudev.arch.auth.Restricted
+import mu.KLogging
 import org.edudev.arch.domain.DomainEntity
 import org.edudev.arch.domain.NoArg
 import org.edudev.arch.domain.Page
@@ -25,7 +25,6 @@ open class ReadOnlyService<T : DomainEntity, DTO : Any, DTO_S>(
 
     @GET
     @Path("{id}")
-    @Restricted
     open fun findById(
         @PathParam("id") id: String,
         @QueryParam("summary") @DefaultValue("true") summary: Boolean
@@ -35,7 +34,6 @@ open class ReadOnlyService<T : DomainEntity, DTO : Any, DTO_S>(
     }
 
     @GET
-    @Restricted
     open fun list(
         @BeanParam page: Page,
         @BeanParam sort: Sort,
@@ -58,4 +56,5 @@ open class ReadOnlyService<T : DomainEntity, DTO : Any, DTO_S>(
 
     protected fun baseEntityFromPath(id: String) = repository.findById(id) ?: throw NotFoundHttpException("Entidade com id $id não encontrada!")
 
+    companion object : KLogging()
 }

@@ -3,6 +3,7 @@ package org.edudev.core.it
 import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
+import mu.KLogging
 import org.edudev.arch.domain.DomainEntity
 import org.edudev.core.configs.assertEquals
 import org.junit.jupiter.api.MethodOrderer
@@ -33,7 +34,7 @@ open class CrudIntegrationTest<E : DomainEntity, DTO : Any, DTO_S>(
             body(dto)
             post()
         } Then {
-            statusCode(200)
+            statusCode(201)
         }
     }
 

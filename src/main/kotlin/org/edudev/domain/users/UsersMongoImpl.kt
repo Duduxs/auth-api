@@ -14,9 +14,11 @@ class UsersMongoImpl @Inject constructor(
     mongoConfig = mongoConfig
 ), Users {
 
-    override fun existsByUsernameAndPassword(username: String, password: String): Boolean =
-        findWith(
-        eq("username", username),
-        eq("password", password)
-    ).count() > 0
+    override fun findByUsernameAndPassword(username: String, password: String): User? {
+        return findWith(
+            eq("username", username),
+            eq("password", password)
+        ).firstOrNull()
+
+    }
 }

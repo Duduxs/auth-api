@@ -4,6 +4,7 @@ import dev.morphia.annotations.*
 import dev.morphia.utils.IndexType
 import org.edudev.arch.domain.DomainEntity
 import org.edudev.domain.properties.directionalities.Directionality
+import org.edudev.domain.users.User
 import org.jetbrains.annotations.NotNull
 import java.util.*
 
@@ -23,4 +24,7 @@ data class Property(
 
     @field:NotNull
     var value: Double = 0.0
+
+    @field:Reference
+    var user: User? = null
 }

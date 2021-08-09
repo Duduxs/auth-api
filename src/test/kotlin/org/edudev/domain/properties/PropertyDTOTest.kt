@@ -32,8 +32,9 @@ class PropertyDTOTest {
         val propertyDTO = PropertyDTO(property)
         val newProperty = Property(propertyDTO.id)
 
-        propertyDTO.update(newProperty)
+        propertyDTO.update(newProperty) { userSearchMock(it) }
         newProperty.assertEquals(propertyDTO)
     }
 
+    private fun userSearchMock(id: String) = if(property.user?.id == id) this.property.user else null
 }

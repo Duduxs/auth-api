@@ -3,7 +3,7 @@ package org.edudev.arch.services
 import com.mongodb.MongoWriteException
 import dev.morphia.query.UpdateException
 import mu.KLogging
-import org.edudev.arch.auth.Restricted
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody
 import org.edudev.arch.domain.DomainEntity
 import org.edudev.arch.domain.NoArg
 import org.edudev.arch.dtos.EntityDTOMapper
@@ -12,10 +12,14 @@ import org.edudev.arch.exceptions.NotAcceptableHttpException
 import org.edudev.arch.exceptions.NotFoundHttpException
 import org.edudev.arch.repositories.Repository
 import org.jboss.resteasy.annotations.jaxrs.PathParam
+import javax.validation.Valid
 import javax.ws.rs.DELETE
 import javax.ws.rs.POST
 import javax.ws.rs.PUT
 import javax.ws.rs.Path
+import javax.ws.rs.core.Context
+import javax.ws.rs.core.Response
+import javax.ws.rs.core.UriInfo
 
 @NoArg
 open class CrudService<T : DomainEntity, DTO : Any, DTO_S>(
@@ -26,8 +30,11 @@ open class CrudService<T : DomainEntity, DTO : Any, DTO_S>(
     mapper = mapper
 ) {
 
+    @Context
+    lateinit var uriInfo: UriInfo
+
     @POST
-    open fun save(dto: DTO): DTO {
+    open fun save(dto: DTO): Response {
         val entity = mapper.unmap(dto)
 
         try {
@@ -36,12 +43,17 @@ open class CrudService<T : DomainEntity, DTO : Any, DTO_S>(
             throw ConflictHttpException("Entidade com dados já cadastrados no banco")
         }
 
-        return mapper.mapFull(entity)
+        val uri = uriInfo
+            .absolutePathBuilder
+            .path("{id}")
+            .resolveTemplate("id", entity.id)
+            .build()
+
+        return Response.created(uri).entity(mapper.mapFull(entity)).build()
     }
 
     @PUT
     @Path("{id}")
-    @Restricted
     open fun update(@PathParam("id") id: String, dto: DTO): DTO {
         val entity = mapper.unmap(dto)
 
@@ -61,13 +73,10 @@ open class CrudService<T : DomainEntity, DTO : Any, DTO_S>(
 
     @DELETE
     @Path("{id}")
-    @Restricted
     open fun delete(@PathParam("id") id: String) {
         val entity = baseEntityFromPath(id)
         repository.remove(entity)
     }
-
-    companion object : KLogging()
 
 }
 

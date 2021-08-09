@@ -10,6 +10,7 @@ import org.edudev.core.configs.persistence.MongoResource
 import org.edudev.domain.users.User
 import org.edudev.domain.users.UserDTO
 import org.edudev.domain.users.Users
+import org.edudev.domain.users.profile.Profiles
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.RepetitionInfo
@@ -22,6 +23,9 @@ class CrudFailureIntegrationTest {
 
     @Inject
     lateinit var users: Users
+
+    @Inject
+    lateinit var profiles: Profiles
 
     lateinit var config: CrudIntegrationHeaderConfig
 
@@ -40,7 +44,7 @@ class CrudFailureIntegrationTest {
     }
 
     private fun prepareAuthenticationHeader() {
-        config = CrudIntegrationHeaderConfig(USERS_ROOT_PATH, users)
+        config = CrudIntegrationHeaderConfig(USERS_ROOT_PATH, users, profiles)
         config.createDefaultAuthentication()
     }
 

@@ -22,8 +22,10 @@ class UserDTOTest {
         val dto = UserDTO(user)
         val newUser = User(dto.id)
 
-        dto.update(newUser)
+        dto.update(newUser) { profileSearchMock(it) }
         newUser.assertEquals(dto)
 
     }
+
+    private fun profileSearchMock(id: String) = if(user.profile?.id == id) this.user.profile else null
 }
