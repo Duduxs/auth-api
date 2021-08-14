@@ -68,6 +68,11 @@
       <artifactId>kotlin-logging</artifactId>
       <version>1.12.5</version>
     </dependency>
+    <dependency>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
+      <version>0.9.12</version>
+    </dependency>
       <dependency>
         <groupId>dev.morphia.morphia</groupId>
         <artifactId>morphia-kotlin</artifactId>

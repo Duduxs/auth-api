@@ -6,7 +6,6 @@ import dev.morphia.query.FindOptions
 import dev.morphia.query.Query
 import dev.morphia.query.experimental.filters.Filter
 import dev.morphia.query.experimental.filters.Filters.*
-import mu.KLogging
 import org.edudev.arch.db.MongoConfig
 import org.edudev.arch.domain.DomainEntity
 import org.edudev.arch.domain.Page
@@ -72,8 +71,6 @@ open class GenericRepositoryMongoImpl<T : DomainEntity>(
     private fun Query<T>.textSearch(value: String?): Query<T> =
         if (value.isNullOrEmpty()) datastore.find(entityClass)
         else datastore.find(entityClass).filter(text(value))
-
-    companion object : KLogging()
 }
 
 

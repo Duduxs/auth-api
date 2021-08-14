@@ -4,7 +4,6 @@ import io.restassured.authentication.PreemptiveBasicAuthScheme
 import io.restassured.builder.RequestSpecBuilder
 import io.restassured.http.ContentType.JSON
 import io.restassured.specification.RequestSpecification
-import mu.KLogging
 import org.eclipse.microprofile.config.ConfigProvider
 import org.edudev.arch.auth.functionality.GlobalFunctionality.*
 import org.edudev.arch.auth.functionality.action.CrudAction.*
@@ -50,8 +49,6 @@ class CrudIntegrationHeaderConfig @Inject constructor(
         }
         users.insert(admin)
     }
-
-    companion object : KLogging()
 
     val headerConfig: RequestSpecification = RequestSpecBuilder()
         .setContentType(JSON)

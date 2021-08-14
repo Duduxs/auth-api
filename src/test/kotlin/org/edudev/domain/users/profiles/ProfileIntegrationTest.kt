@@ -10,6 +10,7 @@ import org.edudev.arch.auth.functionality.GlobalFunctionality.USERS
 import org.edudev.arch.auth.functionality.action.CrudAction.*
 import org.edudev.arch.auth.functionality.permission.Permission
 import org.edudev.core.configs.persistence.MongoResource
+import org.edudev.core.security.DefaultAuth
 import org.edudev.domain.users.User
 import org.edudev.domain.users.Users
 import org.edudev.domain.users.profile.Profile

@@ -1,6 +1,6 @@
 package org.edudev.domain.properties.zipcodes.boundary
 
-import mu.KLogging
+import Main.logger
 import org.edudev.arch.exceptions.BadRequestHttpException
 import org.edudev.arch.exceptions.NotFoundHttpException
 import org.edudev.arch.exceptions.UnprocessableEntityHttpException
@@ -44,7 +44,7 @@ class ViaZipCodeBoundaryHttpImpl(
     )
 
 
-    companion object : KLogging() {
+    companion object {
         const val ZIPCODE_ROOT_PATH = "http://viacep.com.br/ws"
     }
 

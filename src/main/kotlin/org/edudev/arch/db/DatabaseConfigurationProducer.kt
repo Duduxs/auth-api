@@ -1,5 +1,6 @@
 package org.edudev.arch.db
 
+import Main.logger
 import com.mongodb.ConnectionString
 import mu.KLogging
 import org.eclipse.microprofile.config.inject.ConfigProperty
@@ -31,5 +32,4 @@ class DatabaseConfigurationProducer @Inject constructor(
             password = password.orElse(null)
         )
 
-    companion object : KLogging()
 }

@@ -314,4 +314,7 @@ gradle-app.setting
 ### Gradle Patch ###
 **/build/
 
+### Arquivo chato da mizera ###
+auth-api.kotlin_module
+
 # End of https://www.gitignore.io/api/osx,java,linux,kotlin,windows,eclipse,java-web,intellij+all,visualstudiocode,gradle,maven

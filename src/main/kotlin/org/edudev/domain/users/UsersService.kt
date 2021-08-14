@@ -1,6 +1,5 @@
 package org.edudev.domain.users
 
-import mu.KLogging
 import org.edudev.arch.auth.AuthenticatedUser
 import org.edudev.arch.auth.Restricted
 import org.edudev.arch.auth.functionality.GlobalFunctionality.USERS
@@ -38,8 +37,4 @@ class UsersService @Inject constructor(
     fun listUserProperties(
         @QueryParam("summary") @DefaultValue("true") summary: Boolean,
     ): Any? = properties.listByUser(currentAuthenticated.user).map { propertyDTOmapper.map(it, summary) }
-
-
-
-    companion object : KLogging()
 }

@@ -1,5 +1,6 @@
 package org.edudev.arch.exceptions
 
+import Main.logger
 import mu.KLogging
 import javax.ws.rs.core.Response
 
@@ -10,8 +11,6 @@ data class ConstraintJsonError(
     init {
         logger.error { "* * * (Constraint: ${code}) ->  $error * * *" }
     }
-
-    companion object : KLogging()
 }
 
 data class ValidationError(

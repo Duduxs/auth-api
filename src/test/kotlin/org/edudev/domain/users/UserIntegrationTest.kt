@@ -1,6 +1,7 @@
 package org.edudev.domain.users
 
 import io.quarkus.test.common.QuarkusTestResource
+import io.quarkus.test.common.http.TestHTTPEndpoint
 import io.quarkus.test.junit.QuarkusTest
 import org.edudev.core.it.CrudIntegrationTest
 import org.edudev.core.configs.persistence.MongoResource
@@ -20,3 +21,10 @@ class UserIntegrationTest : CrudIntegrationTest<User, UserDTO, UserDTO>(
     entity = user,
     dto = UserDTO(user),
 )
+
+//@QuarkusTest
+//@QuarkusTestResource(MongoResource::class)
+//@TestHTTPEndpoint(UsersService::class)
+//class UserIntegrationTest {
+//
+//}

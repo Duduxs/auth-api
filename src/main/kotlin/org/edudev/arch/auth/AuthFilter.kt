@@ -1,6 +1,5 @@
 package org.edudev.arch.auth
 
-import mu.KLogging
 import org.edudev.arch.auth.HTTPVerb.*
 import org.edudev.arch.auth.functionality.GlobalFunctionality.EMPTY
 import org.edudev.arch.auth.functionality.action.CrudAction
@@ -85,7 +84,6 @@ open class AuthFilter : ContainerRequestFilter {
             schemeType = AuthScheme.BASIC
         )
     }
-    companion object : KLogging()
 }
 
 

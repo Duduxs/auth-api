@@ -1,5 +1,6 @@
 package org.edudev.arch.exceptions
 
+import Main.logger
 import io.netty.handler.codec.http.HttpResponseStatus
 import io.netty.handler.codec.http.HttpResponseStatus.*
 import mu.KLogging
@@ -25,8 +26,6 @@ open class HttpExceptionHandler(status: HttpResponseStatus, payload: String) : E
 
        throw WebApplicationException(response)
     }
-
-    companion object : KLogging()
 }
 
 class UnauthorizedHttpException(payload: String = "Usuário não autorizado!") : HttpExceptionHandler(UNAUTHORIZED, payload)

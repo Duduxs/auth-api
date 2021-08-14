@@ -1,6 +1,5 @@
 package org.edudev.arch.services
 
-import mu.KLogging
 import org.edudev.arch.domain.DomainEntity
 import org.edudev.arch.domain.NoArg
 import org.edudev.arch.domain.Page
@@ -56,5 +55,4 @@ open class ReadOnlyService<T : DomainEntity, DTO : Any, DTO_S>(
 
     protected fun baseEntityFromPath(id: String) = repository.findById(id) ?: throw NotFoundHttpException("Entidade com id $id não encontrada!")
 
-    companion object : KLogging()
 }

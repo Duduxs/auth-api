@@ -1,5 +1,6 @@
 package org.edudev.arch.services
 
+import Main.logger
 import com.mongodb.MongoWriteException
 import dev.morphia.query.UpdateException
 import org.edudev.arch.domain.DomainEntity

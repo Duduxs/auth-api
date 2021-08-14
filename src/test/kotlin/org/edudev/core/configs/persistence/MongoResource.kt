@@ -1,7 +1,7 @@
 package org.edudev.core.configs.persistence
 
+import Main.logger
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager
-import mu.KLogging
 import org.testcontainers.containers.MongoDBContainer
 import org.testcontainers.utility.DockerImageName
 
@@ -16,6 +16,4 @@ class MongoResource : QuarkusTestResourceLifecycleManager {
     }
 
     override fun stop() { container.stop() }
-
-    companion object : KLogging()
 }
