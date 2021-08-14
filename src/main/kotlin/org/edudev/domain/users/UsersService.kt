@@ -21,7 +21,7 @@ class UsersService @Inject constructor(
     val users: Users,
     val properties: Properties,
     val userDTOMapper: UserDTOMapper,
-    val propertyDTOmapper: PropertyDTOMapper,
+    val propertyDTOmapper: PropertyDTOMapper
 ) : CrudService<User, UserDTO, UserSummaryDTO>(
     repository = users,
     mapper = userDTOMapper

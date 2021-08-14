@@ -6,6 +6,7 @@ import org.edudev.arch.domain.DomainEntity
 import org.edudev.domain.users.profile.Profile
 import org.jetbrains.annotations.NotNull
 import java.util.*
+import javax.validation.constraints.Email
 
 @Indexes(
     Index(fields = arrayOf(Field(value = "$**", type = IndexType.TEXT))),
@@ -23,6 +24,7 @@ data class User(
     var username: String = ""
 
     @field:NotNull
+    @field:Email
     var email: String = ""
 
     @field:NotNull

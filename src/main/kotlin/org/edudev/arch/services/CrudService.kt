@@ -2,8 +2,6 @@ package org.edudev.arch.services
 
 import com.mongodb.MongoWriteException
 import dev.morphia.query.UpdateException
-import mu.KLogging
-import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody
 import org.edudev.arch.domain.DomainEntity
 import org.edudev.arch.domain.NoArg
 import org.edudev.arch.dtos.EntityDTOMapper
@@ -12,7 +10,6 @@ import org.edudev.arch.exceptions.NotAcceptableHttpException
 import org.edudev.arch.exceptions.NotFoundHttpException
 import org.edudev.arch.repositories.Repository
 import org.jboss.resteasy.annotations.jaxrs.PathParam
-import javax.validation.Valid
 import javax.ws.rs.DELETE
 import javax.ws.rs.POST
 import javax.ws.rs.PUT

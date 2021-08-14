@@ -4,15 +4,19 @@ package org.edudev.domain.properties
 import org.edudev.core.configs.assertEquals
 import org.edudev.core.configs.assertSummaryEquals
 import org.edudev.domain.properties.directionalities.Directionality
+import org.edudev.domain.properties.zipcodes.Address
+import org.edudev.domain.properties.zipcodes.UF
 import org.junit.jupiter.api.Test
 
 class PropertyDTOTest {
 
-    private val property = Property().apply {
-        name = "Property Domain"
-        address = "Property Address"
-        directionality = Directionality.RENT
-        value = 55000.0
+    private val address = Address(zipCode = "53220375", district = "Peixinhos", street = "Av Vasco Rodriguês", city = "Olinda", uf = UF.PE)
+
+    private val property = Property().also {
+        it.name = "Property Domain"
+        it.address = address
+        it.directionality = Directionality.RENT
+        it.value = 55000.0
     }
 
     @Test

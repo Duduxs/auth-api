@@ -1,5 +1,7 @@
 package org.edudev.domain.users
 
+import org.edudev.arch.extensions.throwIfViolate
+import org.edudev.arch.extensions.validate
 import org.edudev.domain.users.profile.Profile
 import org.edudev.domain.users.profile.ProfileDTO
 import java.util.*
@@ -32,6 +34,7 @@ data class UserDTO(
         u.email = email
         u.password = password
         u.profile = profile?.id?.let { profileSearch(it) }
+        u.validate().throwIfViolate()
     }
 
 }

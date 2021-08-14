@@ -7,6 +7,7 @@ import org.edudev.arch.exceptions.BadRequestHttpException
 import org.edudev.arch.services.CrudService
 import javax.inject.Inject
 import javax.ws.rs.Consumes
+import javax.ws.rs.POST
 import javax.ws.rs.Path
 import javax.ws.rs.Produces
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
@@ -23,6 +24,8 @@ class ProfilesService @Inject constructor(
     repository = profiles,
     mapper = profileDTOMapper
 ) {
+
+    @POST
     override fun save(dto: ProfileDTO): Response {
         if(dto.permissions.any { it.functionality === EMPTY }) throw BadRequestHttpException("Funcionalidade $EMPTY não é cadastrável.")
         return super.save(dto)

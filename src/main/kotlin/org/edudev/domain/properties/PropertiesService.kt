@@ -1,7 +1,6 @@
 package org.edudev.domain.properties
 
 import org.edudev.arch.auth.Restricted
-import org.edudev.arch.auth.functionality.GlobalFunctionality.PROFILES
 import org.edudev.arch.auth.functionality.GlobalFunctionality.PROPERTIES
 import org.edudev.arch.services.CrudService
 import javax.inject.Inject

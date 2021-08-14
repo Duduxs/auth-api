@@ -1,6 +1,8 @@
 package org.edudev.domain.users.profile
 
 import org.edudev.arch.auth.functionality.permission.Permission
+import org.edudev.arch.extensions.throwIfViolate
+import org.edudev.arch.extensions.validate
 import java.util.*
 
 data class ProfileDTO(
@@ -20,5 +22,6 @@ data class ProfileDTO(
         require(it.id == id) { "Incompatible Id" }
         it.name = name
         it.permissions = permissions
+        it.validate().throwIfViolate()
     }
 }

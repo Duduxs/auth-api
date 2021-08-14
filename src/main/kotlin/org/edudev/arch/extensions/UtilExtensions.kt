@@ -5,3 +5,5 @@ inline fun <reified T: Any> Any?.takeIfInstance() = this.takeIf { it is T }?.let
 fun Boolean?.ifFalseThrow(exception: () -> Exception) = if(this == false) exception.invoke() else this
 
 
+
+

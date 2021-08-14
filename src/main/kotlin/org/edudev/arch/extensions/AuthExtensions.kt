@@ -5,6 +5,7 @@ import org.edudev.arch.auth.functionality.GlobalFunctionality
 import org.edudev.arch.auth.functionality.action.CrudAction
 import org.edudev.arch.exceptions.ForbiddenHttpException
 import org.edudev.domain.users.User
+import java.lang.reflect.Method
 import java.util.*
 
 private const val basicAuthorizationPrefix = "Basic"

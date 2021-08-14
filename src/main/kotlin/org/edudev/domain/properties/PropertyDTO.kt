@@ -1,6 +1,9 @@
 package org.edudev.domain.properties
 
+import org.edudev.arch.extensions.throwIfViolate
+import org.edudev.arch.extensions.validate
 import org.edudev.domain.properties.directionalities.Directionality
+import org.edudev.domain.properties.zipcodes.Address
 import org.edudev.domain.users.User
 import org.edudev.domain.users.UserDTO
 import org.edudev.domain.users.toDTO
@@ -10,7 +13,7 @@ import java.util.*
 data class PropertyDTO(
     val id: String = UUID.randomUUID().toString(),
     val name: String,
-    val address: String,
+    val address: Address?,
     val directionality: Directionality,
     val value: Double,
     val user: UserDTO?
@@ -34,6 +37,7 @@ data class PropertyDTO(
         it.address = address
         it.directionality = directionality
         it.value = value
-        it.user = user?.id?.let { userSearch(it) }
+        it.user = user?.id?.let { u -> userSearch(u) }
+        it.validate().throwIfViolate()
     }
 }
