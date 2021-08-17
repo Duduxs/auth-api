@@ -1,7 +1,5 @@
 package org.edudev.domain.users.profiles
 
-import io.quarkus.test.common.QuarkusTestResource
-import io.quarkus.test.junit.QuarkusTest
 import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
@@ -9,8 +7,7 @@ import org.edudev.arch.auth.functionality.GlobalFunctionality.PROFILES
 import org.edudev.arch.auth.functionality.GlobalFunctionality.USERS
 import org.edudev.arch.auth.functionality.action.CrudAction.*
 import org.edudev.arch.auth.functionality.permission.Permission
-import org.edudev.core.configs.persistence.MongoResource
-import org.edudev.core.security.DefaultAuth
+import org.edudev.core.configs.QuarkusIntegrationTest
 import org.edudev.domain.users.User
 import org.edudev.domain.users.Users
 import org.edudev.domain.users.profile.Profile
@@ -20,8 +17,7 @@ import org.junit.jupiter.api.Test
 import javax.inject.Inject
 
 
-@QuarkusTest
-@QuarkusTestResource(MongoResource::class)
+@QuarkusIntegrationTest
 class ProfileIntegrationTest  {
 
     private val profile = Profile().also {

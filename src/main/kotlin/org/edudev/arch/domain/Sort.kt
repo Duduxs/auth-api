@@ -15,7 +15,7 @@ class Sort {
     @DefaultValue("DESC")
     var type: SortOrder = SortOrder.DESC
 
-    constructor(field: String, type: SortOrder) {
+    constructor(field: String = "id", type: SortOrder = SortOrder.DESC) {
         this.field = field
         this.type = type
     }

@@ -4,6 +4,7 @@ import org.edudev.arch.extensions.throwIfViolate
 import org.edudev.arch.extensions.validate
 import org.edudev.domain.users.profile.Profile
 import org.edudev.domain.users.profile.ProfileDTO
+import org.edudev.domain.users.profile.toDTO
 import java.util.*
 
 data class UserDTO(
@@ -12,7 +13,7 @@ data class UserDTO(
     val username: String,
     val email: String,
     val password: String,
-    val profile: ProfileDTO?
+    val profile: ProfileDTO
 ) {
 
     constructor(user: User) : this(
@@ -21,7 +22,7 @@ data class UserDTO(
         user.username,
         user.email,
         user.password,
-        user.profile?.let { ProfileDTO(it) }
+        user.profile!!.toDTO()
     )
 
     fun update(
@@ -33,7 +34,7 @@ data class UserDTO(
         u.username = username
         u.email = email
         u.password = password
-        u.profile = profile?.id?.let { profileSearch(it) }
+        u.profile = profileSearch(profile.id)
         u.validate().throwIfViolate()
     }
 

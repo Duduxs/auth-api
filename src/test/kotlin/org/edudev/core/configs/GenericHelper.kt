@@ -5,13 +5,13 @@ import org.edudev.arch.domain.DomainEntity
 import java.lang.reflect.Field
 
 
-fun <E : DomainEntity> E.assertEquals(dto: Any) {
+infix fun <E : DomainEntity> E.assertEquals(dto: Any) {
     assertThat(this)
         .usingRecursiveComparison()
         .isEqualTo(dto)
 }
 
-fun <E : DomainEntity> E.assertSummaryEquals(dto: Any) {
+infix fun <E : DomainEntity> E.assertSummaryEquals(dto: Any) {
     val fieldsIgnored: Array<String> = getSummaryMissingFieldsName(
         entityFields = this::class.java::getDeclaredFields.invoke(),
         dtoFields = dto::class.java::getDeclaredFields.invoke(),
@@ -22,7 +22,7 @@ fun <E : DomainEntity> E.assertSummaryEquals(dto: Any) {
         .isEqualTo(dto)
 }
 
-fun <E : Collection<DomainEntity>> E.assertCollectionEquals(dtos: Collection<Any>) {
+infix fun <E : Collection<DomainEntity>> E.assertCollectionEquals(dtos: Collection<Any>) {
     assertThat(this)
         .usingRecursiveComparison()
         .isEqualTo(dtos)
@@ -39,4 +39,3 @@ fun getSummaryMissingFieldsName(entityFields: Array<Field>, dtoFields: Array<Fie
     .filter { it.name !in dtoFields.map { s -> s.name } }
     .map { it.name }
     .toTypedArray()
-

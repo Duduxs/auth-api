@@ -25,3 +25,5 @@ data class ProfileDTO(
         it.validate().throwIfViolate()
     }
 }
+
+fun Profile.toDTO() = ProfileDTO(this)

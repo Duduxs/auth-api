@@ -14,7 +14,7 @@ class Page {
     @DefaultValue("10")
     var last: Int = 10
 
-    constructor(first: Int, last: Int) {
+    constructor(first: Int = 0, last: Int = 10) {
         this.first = first
         this.last = last
     }
