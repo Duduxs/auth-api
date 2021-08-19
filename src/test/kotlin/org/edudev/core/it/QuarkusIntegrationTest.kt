@@ -1,4 +1,4 @@
-package org.edudev.core.configs
+package org.edudev.core.it
 import io.quarkus.test.common.QuarkusTestResource
 import io.quarkus.test.junit.QuarkusTest
 import org.edudev.core.configs.persistence.MongoResource

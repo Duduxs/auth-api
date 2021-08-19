@@ -1,12 +1,17 @@
 package org.edudev.domain.users
 
-import Main.logger
 import io.quarkus.test.common.http.TestHTTPEndpoint
-import org.edudev.arch.auth.functionality.GlobalFunctionality
-import org.edudev.arch.auth.functionality.action.CrudAction
+import io.restassured.http.ContentType.JSON
+import io.restassured.module.kotlin.extensions.Given
+import io.restassured.module.kotlin.extensions.Then
+import io.restassured.module.kotlin.extensions.When
+import org.edudev.arch.auth.functionality.GlobalFunctionality.PROFILES
+import org.edudev.arch.auth.functionality.GlobalFunctionality.USERS
+import org.edudev.arch.auth.functionality.action.CrudAction.*
 import org.edudev.arch.auth.functionality.permission.Permission
-import org.edudev.core.configs.QuarkusIntegrationTest
-import org.edudev.core.it.*
+import org.edudev.core.it.QuarkusIntegrationTest
+import org.edudev.core.it.withCrudOperations
+import org.edudev.core.security.DefaultAuth.defaultAuthenticationHeader
 import org.edudev.core.security.DefaultAuth.insertAdmin
 import org.edudev.domain.users.profile.Profile
 import org.edudev.domain.users.profile.Profiles
@@ -14,15 +19,6 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import javax.inject.Inject
 
-
-//
-//@QuarkusTest
-//@QuarkusTestResource(MongoResource::class)
-//class UserIntegrationTest : CrudIntegrationTest<User, UserDTO, UserDTO>(
-//    rootPath = "/users",
-//    entity = user,
-//    dto = UserDTO(user),
-//)
 
 @QuarkusIntegrationTest
 @TestHTTPEndpoint(UsersService::class)
@@ -37,10 +33,10 @@ class UserIntegrationTest {
     private val employeeProfile = Profile().also {
         it.name = "Employee Profile"
         it.permissions = listOf(
-            Permission(GlobalFunctionality.USERS, listOf(CrudAction.INSERT, CrudAction.READ)),
+            Permission(USERS, listOf(INSERT, READ)),
             Permission(
-                GlobalFunctionality.PROFILES,
-                listOf(CrudAction.INSERT, CrudAction.READ, CrudAction.DELETE, CrudAction.UPDATE)
+                PROFILES,
+                listOf(INSERT, READ, DELETE, UPDATE)
             )
         )
     }
@@ -60,19 +56,17 @@ class UserIntegrationTest {
     }
 
     @Test
-    fun `must execute ChangeOperations`(){
-        val newUser = user.copy()
-        //CRIAR UMA NOVA VAR PRA PASSAR O USUÁRIO A SER COMPARADO (NOVO) PRO UPDATE
-        withChangeOperations(
-            entity = user,
-            dto = UserDTO(newUser),
-            repository = users,
-            assertFunction = newUser::assertEquals,
-        )
-    }
+    fun `must execute CrudOperations`() {
 
-    @Test
-    fun `must execute ReadOperations`() {
+        val userUpdated = user.copy().also {
+            it.name = "Eduardo New Name"
+            it.username = "Dudupp1"
+            it.email = "EduardoJ@gmail.com"
+            it.password = "123"
+            it.password = "nowThePasswordIsStrong"
+            it.profile = employeeProfile
+        }
+
         val userList = (1..5).map { i ->
             User(id = i.toString()).also {
                 it.name = "Nome $i"
@@ -83,15 +77,37 @@ class UserIntegrationTest {
             }
         }
 
-        withReadOperations(
+        withCrudOperations(
             entity = user,
             entities = userList,
+            dto = UserDTO(user),
+            newDataDTO = UserDTO(userUpdated),
             repository = users,
             assertFunction = user::assertEquals,
+            assertSummaryFunction = user::assertSummaryEquals,
+            assertUpdateFunction = userUpdated::assertEquals,
             assertListFunction = userList::assertCollectionEquals,
-            assertSummaryFunction = user::assertSummaryEqualss,
-            assertListSummaryFunction = userList::assertCollectionSummaryEquals
+            assertListSummaryFunction = userList::assertCollectionSummaryEquals,
         )
     }
 
+    @Test
+    fun `must not insert user by duplicated data`() {
+        val user = User().also { it.email = "sameEmail@gmail.com"; it.profile = employeeProfile }
+
+        try {
+            users.insert(user)
+            Given {
+                contentType(JSON)
+                defaultAuthenticationHeader()
+            } When {
+                body(UserDTO(user))
+                post()
+            } Then {
+                statusCode(409)
+            }
+        } finally {
+            users.remove(user)
+        }
+    }
 }

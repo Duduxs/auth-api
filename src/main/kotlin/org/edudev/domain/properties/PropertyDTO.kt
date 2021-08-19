@@ -13,7 +13,7 @@ import java.util.*
 data class PropertyDTO(
     val id: String = UUID.randomUUID().toString(),
     val name: String,
-    val address: Address?,
+    val address: Address,
     val directionality: Directionality,
     val value: Double,
     val user: UserDTO?
@@ -22,7 +22,7 @@ data class PropertyDTO(
     constructor(property: Property) : this(
         property.id,
         property.name,
-        property.address,
+        property.address!!,
         property.directionality,
         property.value,
         property.user?.toDTO()

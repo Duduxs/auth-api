@@ -7,7 +7,7 @@ import org.edudev.arch.auth.functionality.GlobalFunctionality.PROFILES
 import org.edudev.arch.auth.functionality.GlobalFunctionality.USERS
 import org.edudev.arch.auth.functionality.action.CrudAction.*
 import org.edudev.arch.auth.functionality.permission.Permission
-import org.edudev.core.configs.QuarkusIntegrationTest
+import org.edudev.core.it.QuarkusIntegrationTest
 import org.edudev.domain.users.User
 import org.edudev.domain.users.Users
 import org.edudev.domain.users.profile.Profile

@@ -1,4 +1,4 @@
-package org.edudev.core
+package org.edudev.core.it
 
 import Main.logger
 import io.quarkus.test.junit.callback.QuarkusTestBeforeClassCallback

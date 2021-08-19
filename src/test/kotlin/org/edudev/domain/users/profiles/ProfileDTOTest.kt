@@ -4,7 +4,6 @@ import org.edudev.arch.auth.functionality.GlobalFunctionality.PROPERTIES
 import org.edudev.arch.auth.functionality.GlobalFunctionality.USERS
 import org.edudev.arch.auth.functionality.action.CrudAction.*
 import org.edudev.arch.auth.functionality.permission.Permission
-import org.edudev.core.configs.assertEquals
 import org.edudev.domain.users.profile.Profile
 import org.edudev.domain.users.profile.ProfileDTO
 import org.junit.Test
@@ -24,7 +23,7 @@ class ProfileDTOTest {
     @Test
     fun `ProfileDTO must be instantiable`(){
         val dto = ProfileDTO(profile)
-        profile.assertEquals(dto)
+        profile assertEquals dto
     }
 
     @Test
@@ -33,7 +32,7 @@ class ProfileDTOTest {
         val newProfile = Profile(dto.id)
 
         dto.update(newProfile)
-        newProfile.assertEquals(dto)
+        newProfile assertEquals dto
 
     }
 }

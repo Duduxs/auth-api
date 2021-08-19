@@ -1,7 +1,8 @@
 package org.edudev.domain.users
 
-import org.edudev.arch.auth.functionality.GlobalFunctionality
-import org.edudev.arch.auth.functionality.action.CrudAction
+import org.edudev.arch.auth.functionality.GlobalFunctionality.USERS
+import org.edudev.arch.auth.functionality.action.CrudAction.INSERT
+import org.edudev.arch.auth.functionality.action.CrudAction.READ
 import org.edudev.arch.auth.functionality.permission.Permission
 import org.edudev.domain.users.profile.Profile
 import org.junit.Test
@@ -11,7 +12,7 @@ class UserDTOTest {
     private val profile = Profile().also {
         it.name = "Basic profile"
         it.permissions = listOf(
-            Permission(GlobalFunctionality.USERS, listOf(CrudAction.INSERT, CrudAction.READ)),
+            Permission(USERS, listOf(INSERT, READ)),
         )
     }
 

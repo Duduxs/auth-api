@@ -12,7 +12,7 @@ infix fun User.assertEquals(dto: UserDTO){
     assertEquals(this.profile!!.id, dto.profile.id)
 }
 
-infix fun User.assertSummaryEqualss(dto: UserSummaryDTO){
+infix fun User.assertSummaryEquals(dto: UserSummaryDTO){
     assertEquals(this.id, dto.id)
     assertEquals(this.username, dto.username)
     assertEquals(this.email, dto.email)
@@ -29,5 +29,5 @@ infix fun Collection<User>.assertCollectionSummaryEquals(dto: Collection<UserSum
     val domains = this.sortedByDescending { it.id }
     val dtos = dto.sortedByDescending { it.id }.filter { it.id != "adminId" }
 
-    domains.forEachIndexed { i, user -> user.assertSummaryEqualss(dtos[i]) }
+    domains.forEachIndexed { i, user -> user.assertSummaryEquals(dtos[i]) }
 }

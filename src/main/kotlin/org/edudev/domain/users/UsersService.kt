@@ -19,7 +19,7 @@ import javax.ws.rs.core.SecurityContext
 class UsersService @Inject constructor(
     val users: Users,
     val properties: Properties,
-    val userDTOMapper: UserDTOMapper,
+    userDTOMapper: UserDTOMapper,
     val propertyDTOmapper: PropertyDTOMapper
 ) : CrudService<User, UserDTO, UserSummaryDTO>(
     repository = users,
