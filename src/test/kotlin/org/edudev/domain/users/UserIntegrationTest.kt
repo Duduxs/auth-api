@@ -11,6 +11,7 @@ import org.edudev.arch.auth.functionality.action.CrudAction.*
 import org.edudev.arch.auth.functionality.permission.Permission
 import org.edudev.core.it.QuarkusIntegrationTest
 import org.edudev.core.it.withCrudOperations
+import org.edudev.core.it.withFindById
 import org.edudev.core.security.DefaultAuth.defaultAuthenticationHeader
 import org.edudev.core.security.DefaultAuth.insertAdmin
 import org.edudev.domain.users.profile.Profile
@@ -18,6 +19,7 @@ import org.edudev.domain.users.profile.Profiles
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import javax.inject.Inject
+import kotlin.reflect.KClass
 
 
 @QuarkusIntegrationTest
@@ -57,7 +59,6 @@ class UserIntegrationTest {
 
     @Test
     fun `must execute CrudOperations`() {
-
         val userUpdated = user.copy().also {
             it.name = "Eduardo New Name"
             it.username = "Dudupp1"

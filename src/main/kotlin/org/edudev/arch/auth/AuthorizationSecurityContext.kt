@@ -1,6 +1,6 @@
 package org.edudev.arch.auth
 
-import org.edudev.arch.auth.functionality.GlobalFunctionality
+import org.edudev.arch.auth.functionality.GlobalFunctionality.valueOf
 import javax.ws.rs.core.SecurityContext
 
 class AuthorizationSecurityContext(
@@ -11,7 +11,7 @@ class AuthorizationSecurityContext(
 
     override fun getUserPrincipal() = principal
 
-    override fun isUserInRole(functionality: String) = principal.hasAuthorizedFor(GlobalFunctionality.valueOf(functionality))
+    override fun isUserInRole(functionality: String) = principal.hasAuthorizedFor(valueOf(functionality))
 
     override fun isSecure() = secure
 

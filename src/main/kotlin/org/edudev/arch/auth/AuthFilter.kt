@@ -1,5 +1,7 @@
 package org.edudev.arch.auth
 
+import io.jsonwebtoken.*
+import org.edudev.arch.auth.AuthScheme.*
 import org.edudev.arch.auth.HTTPVerb.*
 import org.edudev.arch.auth.functionality.GlobalFunctionality.EMPTY
 import org.edudev.arch.auth.functionality.action.CrudAction
@@ -17,19 +19,23 @@ import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.container.ContainerRequestFilter
 import javax.ws.rs.container.ResourceInfo
 import javax.ws.rs.core.Context
+import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
 import javax.ws.rs.ext.Provider
 
 @Provider
 @Restricted(EMPTY)
 open class AuthFilter : ContainerRequestFilter {
 
-    private val authorizationHeader = "Authorization"
-
     @Context
     lateinit var resourceInfo: ResourceInfo
 
     @Inject
     lateinit var users: Users
+
+    @Inject
+    private lateinit var jwtSecret: JWTSecret
+
+    private var authorizationScheme: AuthScheme = BASIC
 
     override fun filter(requestContext: ContainerRequestContext) {
         val loggedUser = performAuthentication(requestContext)
@@ -40,14 +46,42 @@ open class AuthFilter : ContainerRequestFilter {
     }
 
     private fun performAuthentication(requestContext: ContainerRequestContext): User {
-        val base64Credentials = requestContext.getHeaderString(authorizationHeader) ?: throw UnauthorizedHttpException()
+        val authorizationHeader = requestContext.getHeaderString(AUTHORIZATION) ?: throw UnauthorizedHttpException()
 
-        val basicAuth: StringTokenizer = base64Credentials.decodeBase64Authorization()
+        return if (authorizationHeader.startsWith("Basic")) {
+            authorizationScheme = BASIC
+            handleBasicAuthentication(authorizationHeader)
+        } else if (authorizationHeader.startsWith("Bearer")) {
+            authorizationScheme = JWT
+            handleTokenAuthentication(authorizationHeader)
+        } else {
+            throw UnauthorizedHttpException()
+        }
+
+    }
+
+    private fun handleBasicAuthentication(header: String): User {
+        val basicAuth: StringTokenizer = header.decodeBase64Authorization()
 
         val username = basicAuth.nextToken()
         val password = basicAuth.nextToken()
 
         return users.findByUsernameAndPassword(username, password) ?: throw UnauthorizedHttpException()
+    }
+
+    private fun handleTokenAuthentication(header: String): User {
+        val token = header.substring("Bearer".length).trim()
+        val claimsJWS: Jws<Claims>
+
+        try {
+            claimsJWS = Jwts.parser().setSigningKey(jwtSecret.secret).parseClaimsJws(token)
+        } catch (e: JwtException) {
+            throw UnauthorizedHttpException("Token inválido/expirado")
+        }
+
+        val username = claimsJWS.body.subject
+
+        return users.findByUsername(username) ?: throw UnauthorizedHttpException()
     }
 
     private fun performAuthorization(currentUser: User) {
@@ -64,7 +98,8 @@ open class AuthFilter : ContainerRequestFilter {
         when (returnHTTPVerbInCallerMethod()) {
             POST -> permission.containsAction(INSERT).orThrowForbidden(currentUser, INSERT, functionality)
             PUT, PATCH -> permission.containsAction(UPDATE).orThrowForbidden(currentUser, UPDATE, functionality)
-            HTTPVerb.DELETE -> permission.containsAction(CrudAction.DELETE).orThrowForbidden(currentUser, CrudAction.DELETE, functionality)
+            HTTPVerb.DELETE -> permission.containsAction(CrudAction.DELETE)
+                .orThrowForbidden(currentUser, CrudAction.DELETE, functionality)
             GET -> permission.containsAction(READ).orThrowForbidden(currentUser, READ, functionality)
             else -> throw IllegalArgumentException("Valores possíveis: ${HTTPVerb.values().joinToString()}")
         }
@@ -81,7 +116,7 @@ open class AuthFilter : ContainerRequestFilter {
         requestContext.securityContext = AuthorizationSecurityContext(
             principal = AuthenticatedUser(loggedUser),
             secure = requestContext.securityContext.isSecure,
-            schemeType = AuthScheme.BASIC
+            schemeType = authorizationScheme
         )
     }
 }

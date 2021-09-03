@@ -14,6 +14,8 @@ class UsersMongoImpl @Inject constructor(
     mongoConfig = mongoConfig
 ), Users {
 
+    override fun findByUsername(username: String) = findWith(eq("username", username)).firstOrNull()
+
     override fun findByUsernameAndPassword(username: String, password: String): User? {
         return findWith(
             eq("username", username),

@@ -20,7 +20,7 @@ class UsersService @Inject constructor(
     val users: Users,
     val properties: Properties,
     userDTOMapper: UserDTOMapper,
-    val propertyDTOmapper: PropertyDTOMapper
+    val propertyDTOMapper: PropertyDTOMapper
 ) : CrudService<User, UserDTO, UserSummaryDTO>(
     repository = users,
     mapper = userDTOMapper
@@ -36,5 +36,5 @@ class UsersService @Inject constructor(
     @Path("/properties")
     fun listUserProperties(
         @QueryParam("summary") @DefaultValue("true") summary: Boolean,
-    ): Any? = properties.listByUser(currentAuthenticated.user).map { propertyDTOmapper.map(it, summary) }
+    ): Any? = properties.listByUser(currentAuthenticated.user).map { propertyDTOMapper.map(it, summary) }
 }
