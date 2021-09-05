@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-<img alt="Collage" src="https://ik.imagekit.io/27ewoxssse/crud-auth_WAXN6kJoP.png"> 
+<img alt="Collage" src="https://i.imgur.com/OOztGKm.png"> 
 </p>
 
 ## :rocket: Technologies
