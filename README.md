@@ -5,6 +5,8 @@
 
   <p>This project is based in CRUD with Architeture Authenticated with unitary and integration tests.</p>
   
+  <p>At time, this app accepts both basic and JWT auth.</p>
+  
 </h4>
 
 <p align="center">
@@ -25,21 +27,21 @@ This project was developed with the following technologies:
 - API:
 
   - [Kotlin](https://kotlinlang.org/)
-  - [KMongo](https://litote.org/kmongo/)
   - [Quarkus](https://quarkus.io/)
   - [Mongo](https://www.mongodb.com/pt-br)
+  - [Morphia](https://github.com/MorphiaOrg/morphia)
+  - [JAX-RS](https://en.wikipedia.org/wiki/Jakarta_RESTful_Web_Services)
   - [Hibernate Validator](http://hibernate.org/validator/)
   
 - Utils:
 
-  - [Smallrye-openapi](https://quarkus.io/guides/openapi-swaggerui)
+  - [Swagger](https://quarkus.io/guides/openapi-swaggerui)
   - [Kotlin-Logging](https://github.com/MicroUtils/kotlin-logging)
   
 - Tests:
  
   - [JUnit5](https://junit.org/junit5/docs/current/user-guide/)
   - [RestAssured](https://rest-assured.io/)
-  - [Assert4J](https://joel-costigliola.github.io/assertj/)
   - [TestContainers](https://www.testcontainers.org/)
 
 ## :information_source: How to use
@@ -61,7 +63,7 @@ To run the API server:
 Now access on your browser: http://localhost:8080 [Tests -> 8084]
 
 <p align="center">
-  docs -> http://localhost:8080/q/swagger-ui
+  docs -> http://localhost:8080/q/doc
 <img alt="Doc" src="https://ik.imagekit.io/27ewoxssse/swagger_I4B3s_lF-.png"> 
 </p>
 
