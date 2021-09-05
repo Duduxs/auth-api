@@ -1,7 +1,11 @@
 package org.edudev.arch.auth
 
-import io.jsonwebtoken.*
-import org.edudev.arch.auth.AuthScheme.*
+import io.jsonwebtoken.Claims
+import io.jsonwebtoken.Jws
+import io.jsonwebtoken.JwtException
+import io.jsonwebtoken.Jwts
+import org.edudev.arch.auth.AuthScheme.BASIC
+import org.edudev.arch.auth.AuthScheme.JWT
 import org.edudev.arch.auth.HTTPVerb.*
 import org.edudev.arch.auth.functionality.GlobalFunctionality.EMPTY
 import org.edudev.arch.auth.functionality.action.CrudAction
@@ -38,6 +42,14 @@ open class AuthFilter : ContainerRequestFilter {
     private var authorizationScheme: AuthScheme = BASIC
 
     override fun filter(requestContext: ContainerRequestContext) {
+        val invokedPath = requestContext.uriInfo.requestUri.path
+        val invokedMethod = requestContext.request.method
+
+        if (
+            (invokedPath == USERS_PATH && invokedMethod == POST_METHOD) ||
+            (invokedPath == PROFILES_PATH && invokedMethod == POST_METHOD)
+        ) return
+
         val loggedUser = performAuthentication(requestContext)
 
         performAuthorization(currentUser = loggedUser)
@@ -118,6 +130,12 @@ open class AuthFilter : ContainerRequestFilter {
             secure = requestContext.securityContext.isSecure,
             schemeType = authorizationScheme
         )
+    }
+
+    companion object {
+        const val USERS_PATH = "/users"
+        const val PROFILES_PATH = "/profiles"
+        const val POST_METHOD = "POST"
     }
 }
 

@@ -38,6 +38,7 @@ open class CrudService<T : DomainEntity, DTO : Any, DTO_S>(
         try {
             repository.insert(entity)
         } catch (e: MongoWriteException) {
+            logger.error { e }
             throw ConflictHttpException("Entidade com dados já cadastrados no banco")
         }
 
